@@ -32,6 +32,11 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+
+            // Media3
+            implementation(libs.media3.exoplayer)
+            implementation(libs.media3.session)
+            implementation(libs.media3.datasource)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -63,6 +68,13 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+
+            // Coil
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+
+            // Navigation
+            implementation(libs.navigation.compose)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

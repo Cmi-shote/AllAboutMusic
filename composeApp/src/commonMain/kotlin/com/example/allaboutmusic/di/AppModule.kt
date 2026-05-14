@@ -12,6 +12,10 @@ import com.example.allaboutmusic.domain.usecase.GetFeaturedTracksUseCase
 import com.example.allaboutmusic.domain.usecase.GetStreamUrlUseCase
 import com.example.allaboutmusic.domain.usecase.GetTracksByGenreUseCase
 import com.example.allaboutmusic.domain.usecase.SearchTracksUseCase
+import com.example.allaboutmusic.player.MusicPlayer
+import com.example.allaboutmusic.ui.home.HomeViewModel
+import com.example.allaboutmusic.ui.player.PlayerViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -36,4 +40,8 @@ val appModule = module {
     factory { GetStreamUrlUseCase(get()) }
     factory { GetFeaturedTracksUseCase(get()) }
     factory { GetTracksByGenreUseCase(get()) }
+
+    // ViewModels
+    viewModel { PlayerViewModel(get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get()) }
 }
