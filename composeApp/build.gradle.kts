@@ -37,6 +37,9 @@ kotlin {
             implementation(libs.media3.exoplayer)
             implementation(libs.media3.session)
             implementation(libs.media3.datasource)
+
+            // WorkManager
+            implementation(libs.workmanager.runtime)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

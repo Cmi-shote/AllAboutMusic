@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.allaboutmusic.ui.components.MiniPlayer
 import com.example.allaboutmusic.ui.downloads.DownloadsScreen
+import com.example.allaboutmusic.ui.downloads.DownloadsViewModel
 import com.example.allaboutmusic.ui.home.HomeScreen
 import com.example.allaboutmusic.ui.home.HomeViewModel
 import com.example.allaboutmusic.ui.library.LibraryScreen
@@ -50,6 +51,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     val playerViewModel: PlayerViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
+    val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val playerState by playerViewModel.playerState.collectAsState()
     val currentPosition by playerViewModel.currentPosition.collectAsState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -117,7 +119,7 @@ fun AppNavigation() {
                     LibraryScreen()
                 }
                 composable<DownloadsRoute> {
-                    DownloadsScreen()
+                    DownloadsScreen(viewModel = downloadsViewModel)
                 }
                 composable<PlayerRoute> {
                     PlayerScreen(

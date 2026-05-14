@@ -11,7 +11,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun App() {
     KoinApplication(application = {
-        properties(mapOf("JAMENDO_CLIENT_ID" to "YOUR_CLIENT_ID_HERE"))
+        properties(mapOf("JAMENDO_CLIENT_ID" to "72cec4ca"))
         modules(appModule, platformModule)
     }) {
         MaterialTheme {

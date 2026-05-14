@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +42,7 @@ fun PlayerScreen(
 ) {
     val state by viewModel.playerState.collectAsState()
     val position by viewModel.currentPosition.collectAsState()
+    val isDownloading by viewModel.isDownloading.collectAsState()
     val track = state.currentTrack
 
     if (track == null) {
@@ -155,6 +158,22 @@ fun PlayerScreen(
                         style = MaterialTheme.typography.displaySmall
                     )
                 }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        // Download button
+        if (track.isDownloaded) {
+            OutlinedButton(onClick = {}, enabled = false) {
+                Text("Downloaded")
+            }
+        } else {
+            Button(
+                onClick = { viewModel.downloadCurrentTrack() },
+                enabled = !isDownloading
+            ) {
+                Text(if (isDownloading) "Queued..." else "Download")
             }
         }
     }

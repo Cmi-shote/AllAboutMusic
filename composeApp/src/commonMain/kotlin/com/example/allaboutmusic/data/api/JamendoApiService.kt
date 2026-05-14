@@ -23,6 +23,7 @@ class JamendoApiService(
             parameter("audioformat", "mp32")
             parameter("include", "musicinfo")
         }.body()
+        response.checkError()
         return response.results.filterRemixes()
     }
 
@@ -33,6 +34,7 @@ class JamendoApiService(
             parameter("id", id)
             parameter("audioformat", "mp32")
         }.body()
+        response.checkError()
         return response.results.firstOrNull()
     }
 
@@ -57,6 +59,7 @@ class JamendoApiService(
             parameter("audioformat", "mp32")
             parameter("order", "popularity_total")
         }.body()
+        response.checkError()
         return response.results.filterRemixes()
     }
 
@@ -69,7 +72,14 @@ class JamendoApiService(
             parameter("audioformat", "mp32")
             parameter("order", "popularity_total")
         }.body()
+        response.checkError()
         return response.results.filterRemixes()
+    }
+
+    private fun JamendoResponse.checkError() {
+        if (headers.status == "failed") {
+            throw JamendoApiException(headers.code, headers.errorMessage)
+        }
     }
 
     private fun List<JamendoTrackDto>.filterRemixes(): List<JamendoTrackDto> {

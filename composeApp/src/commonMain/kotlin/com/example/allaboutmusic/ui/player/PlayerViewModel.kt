@@ -2,20 +2,27 @@ package com.example.allaboutmusic.ui.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.allaboutmusic.data.downloader.DownloadRepository
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.domain.usecase.GetStreamUrlUseCase
 import com.example.allaboutmusic.player.MusicPlayer
 import com.example.allaboutmusic.player.PlayerState
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     private val musicPlayer: MusicPlayer,
-    private val getStreamUrl: GetStreamUrlUseCase
+    private val getStreamUrl: GetStreamUrlUseCase,
+    private val downloadRepository: DownloadRepository
 ) : ViewModel() {
 
     val playerState: StateFlow<PlayerState> = musicPlayer.playerState
     val currentPosition: StateFlow<Long> = musicPlayer.currentPosition
+
+    private val _isDownloading = MutableStateFlow(false)
+    val isDownloading: StateFlow<Boolean> = _isDownloading.asStateFlow()
 
     fun playTrack(track: Track) {
         viewModelScope.launch {
@@ -46,6 +53,19 @@ class PlayerViewModel(
 
     fun stop() {
         musicPlayer.stop()
+    }
+
+    fun downloadCurrentTrack() {
+        val track = playerState.value.currentTrack ?: return
+        if (track.isDownloaded) return
+        viewModelScope.launch {
+            _isDownloading.value = true
+            try {
+                downloadRepository.enqueueDownload(track)
+            } finally {
+                _isDownloading.value = false
+            }
+        }
     }
 
     override fun onCleared() {
