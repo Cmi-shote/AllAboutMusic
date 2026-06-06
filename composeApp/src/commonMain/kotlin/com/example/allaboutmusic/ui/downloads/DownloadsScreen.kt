@@ -1,5 +1,6 @@
 package com.example.allaboutmusic.ui.downloads
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.example.allaboutmusic.domain.model.DownloadItem
 @Composable
 fun DownloadsScreen(
     viewModel: DownloadsViewModel,
+    onTrackClick: (com.example.allaboutmusic.domain.model.Track) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -79,6 +81,11 @@ fun DownloadsScreen(
                 items(state.downloads, key = { it.id }) { item ->
                     DownloadItemCard(
                         item = item,
+                        onClick = {
+                            if (item.status == DownloadItem.Status.COMPLETED) {
+                                onTrackClick(item.track)
+                            }
+                        },
                         onCancel = { viewModel.cancelDownload(item.id) },
                         onRetry = { viewModel.retryDownload(item.id) }
                     )
@@ -91,11 +98,14 @@ fun DownloadsScreen(
 @Composable
 private fun DownloadItemCard(
     item: DownloadItem,
+    onClick: () -> Unit,
     onCancel: () -> Unit,
     onRetry: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = item.status == DownloadItem.Status.COMPLETED) { onClick() },
         colors = CardDefaults.cardColors()
     ) {
         Row(

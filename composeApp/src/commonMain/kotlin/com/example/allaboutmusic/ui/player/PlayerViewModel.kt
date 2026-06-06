@@ -27,14 +27,21 @@ class PlayerViewModel(
     fun playTrack(track: Track) {
         viewModelScope.launch {
             try {
-                val streamUrl = if (track.localPath != null) {
+                // Check if track is downloaded (in-memory track from API may not have localPath)
+                val resolvedTrack = if (track.localPath != null) {
+                    track
+                } else {
+                    downloadRepository.getTrackWithLocalPath(track) ?: track
+                }
+
+                val streamUrl = if (resolvedTrack.localPath != null) {
                     "" // Not needed for local files, MusicPlayer handles it
                 } else {
-                    getStreamUrl(track.id)
+                    getStreamUrl(resolvedTrack.id)
                 }
-                musicPlayer.playTrack(track, streamUrl)
+                musicPlayer.playTrack(resolvedTrack, streamUrl)
             } catch (e: Exception) {
-                // Stream URL fetch failed — player state will reflect the error
+                // Stream URL fetch failed — player will show error state
             }
         }
     }

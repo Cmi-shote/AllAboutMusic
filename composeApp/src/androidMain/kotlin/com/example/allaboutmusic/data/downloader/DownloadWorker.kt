@@ -127,8 +127,10 @@ class DownloadWorker(
             val channel = NotificationChannel(
                 CHANNEL_ID,
                 "Downloads",
-                NotificationManager.IMPORTANCE_LOW
-            )
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Music download progress"
+            }
             val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             nm.createNotificationChannel(channel)
         }

@@ -119,7 +119,13 @@ fun AppNavigation() {
                     LibraryScreen()
                 }
                 composable<DownloadsRoute> {
-                    DownloadsScreen(viewModel = downloadsViewModel)
+                    DownloadsScreen(
+                        viewModel = downloadsViewModel,
+                        onTrackClick = { track ->
+                            playerViewModel.playTrack(track)
+                            navController.navigate(PlayerRoute)
+                        }
+                    )
                 }
                 composable<PlayerRoute> {
                     PlayerScreen(

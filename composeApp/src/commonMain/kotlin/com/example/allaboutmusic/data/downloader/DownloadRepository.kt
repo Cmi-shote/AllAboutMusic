@@ -76,6 +76,16 @@ class DownloadRepository(
     suspend fun getStorageUsageBytes(): Long {
         return downloadManager.getStorageUsageBytes()
     }
+
+    /**
+     * Checks DB for an updated Track with localPath set (e.g., after download completed).
+     * API-loaded Track objects don't have localPath — this resolves them against the DB.
+     */
+    suspend fun getTrackWithLocalPath(track: Track): Track? {
+        val entity = trackDao.getTrackById(track.id) ?: return null
+        val dbTrack = entity.toDomain()
+        return if (dbTrack.localPath != null) dbTrack else null
+    }
 }
 
 private fun String.toDownloadStatus(): DownloadItem.Status {
