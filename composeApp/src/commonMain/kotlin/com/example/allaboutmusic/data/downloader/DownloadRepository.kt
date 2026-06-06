@@ -74,19 +74,20 @@ class DownloadRepository(
         val allItems = downloadQueueDao.getAllList()
         val completedItems = allItems.filter { it.status == "completed" }
 
-        // Remove download queue entries
-        downloadQueueDao.clearCompleted()
-
-        // Clear localPath on the track table and delete the files
+        // Delete files and clear DB state BEFORE removing queue entries
         for (item in completedItems) {
-            trackDao.clearLocalPath(item.trackId)
-            item.localPath?.let { path ->
-                try {
-                    val file = java.io.File(path)
-                    file.delete()
-                } catch (_: Exception) { }
+            // Try localPath from download_queue first, fall back to track table
+            val path = item.localPath
+                ?: trackDao.getTrackById(item.trackId)?.localPath
+
+            if (path != null) {
+                deleteFile(path)
             }
+            trackDao.clearLocalPath(item.trackId)
         }
+
+        // Remove download queue entries last
+        downloadQueueDao.clearCompleted()
     }
 
     suspend fun getStorageUsageBytes(): Long {
@@ -116,3 +117,4 @@ private fun String.toDownloadStatus(): DownloadItem.Status {
 }
 
 expect fun currentTimeMillis(): Long
+expect fun deleteFile(path: String): Boolean

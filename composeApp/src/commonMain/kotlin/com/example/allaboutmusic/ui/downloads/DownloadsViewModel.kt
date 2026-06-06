@@ -33,6 +33,8 @@ class DownloadsViewModel(
         viewModelScope.launch {
             downloadRepository.getAllDownloads().collect { downloads ->
                 _uiState.value = _uiState.value.copy(downloads = downloads)
+                // Refresh storage whenever download list changes (e.g. download completes)
+                refreshStorage()
             }
         }
     }
