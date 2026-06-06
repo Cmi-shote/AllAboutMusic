@@ -107,10 +107,18 @@ private fun DownloadButton(
                 modifier = Modifier.size(24.dp)
             )
         }
-        DownloadItem.Status.DOWNLOADING, DownloadItem.Status.PENDING -> {
+        DownloadItem.Status.PENDING -> {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
                 CircularProgressIndicator(
-                    progress = { if (status == DownloadItem.Status.DOWNLOADING) progress else 0f },
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.dp
+                )
+            }
+        }
+        DownloadItem.Status.DOWNLOADING -> {
+            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
+                CircularProgressIndicator(
+                    progress = { progress },
                     modifier = Modifier.size(24.dp),
                     strokeWidth = 2.dp
                 )
