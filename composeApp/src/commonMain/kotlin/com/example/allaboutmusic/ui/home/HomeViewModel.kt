@@ -2,6 +2,8 @@ package com.example.allaboutmusic.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.allaboutmusic.data.downloader.DownloadRepository
+import com.example.allaboutmusic.domain.model.DownloadItem
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.domain.usecase.GetFeaturedTracksUseCase
 import com.example.allaboutmusic.domain.usecase.GetTracksByGenreUseCase
@@ -20,14 +22,16 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val selectedGenre: String? = null,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
+    val downloadStates: Map<String, DownloadItem> = emptyMap()
 )
 
 @OptIn(FlowPreview::class)
 class HomeViewModel(
     private val searchTracks: SearchTracksUseCase,
     private val getFeaturedTracks: GetFeaturedTracksUseCase,
-    private val getTracksByGenre: GetTracksByGenreUseCase
+    private val getTracksByGenre: GetTracksByGenreUseCase,
+    private val downloadRepository: DownloadRepository
 ) : ViewModel() {
 
     companion object {
@@ -42,6 +46,7 @@ class HomeViewModel(
     init {
         loadFeatured()
         observeSearch()
+        observeDownloads()
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -90,6 +95,21 @@ class HomeViewModel(
                     isLoading = false,
                     error = e.message ?: "Failed to load tracks"
                 )
+            }
+        }
+    }
+
+    fun downloadTrack(track: Track) {
+        viewModelScope.launch {
+            downloadRepository.enqueueDownload(track)
+        }
+    }
+
+    private fun observeDownloads() {
+        viewModelScope.launch {
+            downloadRepository.getAllDownloads().collect { downloads ->
+                val stateMap = downloads.associateBy { it.track.id }
+                _uiState.value = _uiState.value.copy(downloadStates = stateMap)
             }
         }
     }

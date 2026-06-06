@@ -16,6 +16,7 @@ import org.koin.core.component.inject
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
+import android.content.pm.ServiceInfo
 import java.net.URL
 
 class DownloadWorker(
@@ -141,7 +142,7 @@ class DownloadWorker(
             .setProgress(100, progress, false)
             .setOngoing(true)
             .build()
-        return ForegroundInfo(notificationId, notification)
+        return ForegroundInfo(notificationId, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC)
     }
 
     private fun showCompletedNotification(notificationId: Int, trackId: String) {

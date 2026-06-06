@@ -106,9 +106,13 @@ fun HomeScreen(
             else -> {
                 LazyColumn {
                     items(state.tracks, key = { it.id }) { track ->
+                        val downloadItem = state.downloadStates[track.id]
                         TrackCard(
                             track = track,
-                            onClick = { onTrackClick(track) }
+                            onClick = { onTrackClick(track) },
+                            downloadStatus = downloadItem?.status,
+                            downloadProgress = downloadItem?.progress ?: 0f,
+                            onDownloadClick = { viewModel.downloadTrack(track) }
                         )
                     }
                 }
