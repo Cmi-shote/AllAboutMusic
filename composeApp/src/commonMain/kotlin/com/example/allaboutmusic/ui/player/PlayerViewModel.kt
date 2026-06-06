@@ -3,6 +3,7 @@ package com.example.allaboutmusic.ui.player
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.allaboutmusic.data.downloader.DownloadRepository
+import com.example.allaboutmusic.data.repository.MixRepository
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.domain.usecase.GetStreamUrlUseCase
 import com.example.allaboutmusic.player.MusicPlayer
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val musicPlayer: MusicPlayer,
     private val getStreamUrl: GetStreamUrlUseCase,
-    private val downloadRepository: DownloadRepository
+    private val downloadRepository: DownloadRepository,
+    private val mixRepository: MixRepository
 ) : ViewModel() {
 
     val playerState: StateFlow<PlayerState> = musicPlayer.playerState
@@ -46,6 +48,15 @@ class PlayerViewModel(
         }
     }
 
+    fun playMix(mixId: String) {
+        viewModelScope.launch {
+            val tracks = mixRepository.getMixTracksList(mixId)
+            if (tracks.isNotEmpty()) {
+                musicPlayer.playMix(tracks)
+            }
+        }
+    }
+
     fun togglePlayPause() {
         if (playerState.value.isPlaying) {
             musicPlayer.pause()
@@ -56,6 +67,14 @@ class PlayerViewModel(
 
     fun seekTo(positionMs: Long) {
         musicPlayer.seekTo(positionMs)
+    }
+
+    fun skipToNext() {
+        musicPlayer.skipToNext()
+    }
+
+    fun skipToPrevious() {
+        musicPlayer.skipToPrevious()
     }
 
     fun stop() {

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,7 +66,7 @@ fun PlayerScreen(
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(onClick = onBack) {
-                Text("←", style = MaterialTheme.typography.headlineSmall)
+                Text("<-", style = MaterialTheme.typography.headlineSmall)
             }
         }
 
@@ -104,9 +105,18 @@ fun PlayerScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
+        // Mix mode indicator
+        if (state.isMixMode) {
+            Text(
+                text = "Track ${state.mixTrackIndex + 1} of ${state.mixTrackCount}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+
         Spacer(Modifier.height(24.dp))
 
-        // Seek bar — debounced to finger-lift only
+        // Seek bar -- debounced to finger-lift only
         if (state.durationMs > 0) {
             val displayPosition = if (isSeeking) seekPosition else position.toFloat()
 
@@ -149,31 +159,58 @@ fun PlayerScreen(
             if (state.isBuffering) {
                 CircularProgressIndicator(modifier = Modifier.size(48.dp))
             } else {
+                // Previous (mix mode only)
+                if (state.isMixMode) {
+                    IconButton(
+                        onClick = { viewModel.skipToPrevious() },
+                        enabled = state.mixTrackIndex > 0,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Text("|<", style = MaterialTheme.typography.titleLarge)
+                    }
+                    Spacer(Modifier.width(16.dp))
+                }
+
+                // Play/Pause
                 IconButton(
                     onClick = { viewModel.togglePlayPause() },
                     modifier = Modifier.size(64.dp)
                 ) {
                     Text(
-                        text = if (state.isPlaying) "⏸" else "▶",
+                        text = if (state.isPlaying) "||" else ">",
                         style = MaterialTheme.typography.displaySmall
                     )
+                }
+
+                // Next (mix mode only)
+                if (state.isMixMode) {
+                    Spacer(Modifier.width(16.dp))
+                    IconButton(
+                        onClick = { viewModel.skipToNext() },
+                        enabled = state.mixTrackIndex < state.mixTrackCount - 1,
+                        modifier = Modifier.size(48.dp)
+                    ) {
+                        Text(">|", style = MaterialTheme.typography.titleLarge)
+                    }
                 }
             }
         }
 
         Spacer(Modifier.height(16.dp))
 
-        // Download button
-        if (track.isDownloaded) {
-            OutlinedButton(onClick = {}, enabled = false) {
-                Text("Downloaded")
-            }
-        } else {
-            Button(
-                onClick = { viewModel.downloadCurrentTrack() },
-                enabled = !isDownloading
-            ) {
-                Text(if (isDownloading) "Queued..." else "Download")
+        // Download button (not shown in mix mode -- tracks are already downloaded)
+        if (!state.isMixMode) {
+            if (track.isDownloaded) {
+                OutlinedButton(onClick = {}, enabled = false) {
+                    Text("Downloaded")
+                }
+            } else {
+                Button(
+                    onClick = { viewModel.downloadCurrentTrack() },
+                    enabled = !isDownloading
+                ) {
+                    Text(if (isDownloading) "Queued..." else "Download")
+                }
             }
         }
     }

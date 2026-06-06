@@ -1,5 +1,6 @@
 package com.example.allaboutmusic.player
 
+import com.example.allaboutmusic.domain.model.MixTrack
 import com.example.allaboutmusic.domain.model.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,9 +22,18 @@ actual class MusicPlayer {
         )
     }
 
+    actual fun playMix(mixTracks: List<MixTrack>) {
+        // TODO: Implement with AVQueuePlayer in Phase 5
+        _playerState.value = PlayerState(
+            error = "iOS mix playback not yet implemented"
+        )
+    }
+
     actual fun pause() {}
     actual fun resume() {}
     actual fun seekTo(positionMs: Long) {}
+    actual fun skipToNext() {}
+    actual fun skipToPrevious() {}
     actual fun stop() {
         _playerState.value = PlayerState()
         _currentPosition.value = 0L

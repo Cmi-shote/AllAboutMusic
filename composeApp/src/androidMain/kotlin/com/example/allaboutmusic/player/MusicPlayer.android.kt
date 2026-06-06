@@ -1,7 +1,9 @@
 package com.example.allaboutmusic.player
 
 import android.content.Context
+import android.net.Uri
 import androidx.annotation.OptIn
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -11,7 +13,11 @@ import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ConcatenatingMediaSource
+import androidx.media3.exoplayer.source.ClippingMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import com.example.allaboutmusic.domain.model.MixTrack
 import com.example.allaboutmusic.domain.model.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +52,9 @@ actual class MusicPlayer(context: Context) {
         .setCache(cache)
         .setUpstreamDataSourceFactory(DefaultDataSource.Factory(context))
 
+    // Store mix tracks for metadata lookup during playback
+    private var currentMixTracks: List<MixTrack> = emptyList()
+
     private val exoPlayer: ExoPlayer = ExoPlayer.Builder(context).build().apply {
         addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
@@ -55,6 +64,28 @@ actual class MusicPlayer(context: Context) {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 updateState()
                 if (isPlaying) startPositionUpdates() else stopPositionUpdates()
+            }
+
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                // Update current track info when mix advances
+                if (currentMixTracks.isNotEmpty()) {
+                    val index = currentMediaItemIndex
+                    if (index in currentMixTracks.indices) {
+                        val mt = currentMixTracks[index]
+                        _playerState.value = _playerState.value.copy(
+                            currentTrack = Track(
+                                id = mt.trackId,
+                                title = mt.title,
+                                artist = mt.artist,
+                                durationMs = mt.durationMs,
+                                coverUrl = mt.coverUrl,
+                                localPath = mt.localPath
+                            ),
+                            mixTrackIndex = index,
+                            durationMs = 0
+                        )
+                    }
+                }
             }
 
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
@@ -68,8 +99,9 @@ actual class MusicPlayer(context: Context) {
     }
 
     actual fun playTrack(track: Track, streamUrl: String) {
+        currentMixTracks = emptyList()
+
         val uri = if (track.localPath != null) {
-            // Offline playback from local file
             "file://${track.localPath}"
         } else {
             streamUrl
@@ -86,7 +118,53 @@ actual class MusicPlayer(context: Context) {
             isPlaying = false,
             currentTrack = track,
             durationMs = 0,
-            isBuffering = true
+            isBuffering = true,
+            isMixMode = false
+        )
+    }
+
+    actual fun playMix(mixTracks: List<MixTrack>) {
+        if (mixTracks.isEmpty()) return
+        currentMixTracks = mixTracks
+
+        val sources = mixTracks.map { mt ->
+            val uri = if (mt.localPath != null) {
+                Uri.fromFile(File(mt.localPath))
+            } else {
+                return // Mix playback requires downloaded tracks
+            }
+
+            val original = ProgressiveMediaSource.Factory(cacheDataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(uri))
+
+            // ClippingMediaSource takes microseconds
+            val startUs = mt.cueInMs * 1000L
+            val endUs = mt.cueOutMs?.let { it * 1000L } ?: C.TIME_END_OF_SOURCE
+
+            ClippingMediaSource(original, startUs, endUs)
+        }
+
+        val concatenated = ConcatenatingMediaSource(*sources.toTypedArray())
+        exoPlayer.setMediaSource(concatenated)
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+
+        val first = mixTracks.first()
+        _playerState.value = PlayerState(
+            isPlaying = false,
+            currentTrack = Track(
+                id = first.trackId,
+                title = first.title,
+                artist = first.artist,
+                durationMs = first.durationMs,
+                coverUrl = first.coverUrl,
+                localPath = first.localPath
+            ),
+            durationMs = 0,
+            isBuffering = true,
+            isMixMode = true,
+            mixTrackIndex = 0,
+            mixTrackCount = mixTracks.size
         )
     }
 
@@ -103,9 +181,22 @@ actual class MusicPlayer(context: Context) {
         _currentPosition.value = positionMs
     }
 
+    actual fun skipToNext() {
+        if (exoPlayer.hasNextMediaItem()) {
+            exoPlayer.seekToNextMediaItem()
+        }
+    }
+
+    actual fun skipToPrevious() {
+        if (exoPlayer.hasPreviousMediaItem()) {
+            exoPlayer.seekToPreviousMediaItem()
+        }
+    }
+
     actual fun stop() {
         exoPlayer.stop()
         exoPlayer.clearMediaItems()
+        currentMixTracks = emptyList()
         _playerState.value = PlayerState()
         _currentPosition.value = 0L
         stopPositionUpdates()

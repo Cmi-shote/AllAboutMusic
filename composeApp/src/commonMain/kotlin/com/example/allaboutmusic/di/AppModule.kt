@@ -52,7 +52,7 @@ val appModule = module {
     factory { GetTracksByGenreUseCase(get()) }
 
     // ViewModels
-    viewModel { PlayerViewModel(get(), get(), get()) }
+    viewModel { PlayerViewModel(get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { DownloadsViewModel(get()) }
     viewModel { LibraryViewModel(get()) }

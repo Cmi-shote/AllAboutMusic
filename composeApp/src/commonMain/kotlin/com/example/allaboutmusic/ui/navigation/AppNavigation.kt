@@ -153,7 +153,8 @@ fun AppNavigation() {
                         mixId = route,
                         onBack = { navController.popBackStack() },
                         onPlayMix = { mixId ->
-                            // TODO: Phase 4d — play mix with ClippingMediaSource
+                            playerViewModel.playMix(mixId)
+                            navController.navigate(PlayerRoute)
                         }
                     )
                 }
