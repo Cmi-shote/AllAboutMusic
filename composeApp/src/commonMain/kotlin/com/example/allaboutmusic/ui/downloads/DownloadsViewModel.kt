@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.allaboutmusic.data.downloader.DownloadRepository
 import com.example.allaboutmusic.domain.model.DownloadItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 
 private const val STORAGE_WARNING_BYTES = 2L * 1024 * 1024 * 1024 // 2GB
@@ -31,11 +33,19 @@ class DownloadsViewModel(
 
     private fun observeDownloads() {
         viewModelScope.launch {
-            downloadRepository.getAllDownloads().collect { downloads ->
-                _uiState.value = _uiState.value.copy(downloads = downloads)
-                // Refresh storage whenever download list changes (e.g. download completes)
-                refreshStorage()
-            }
+            downloadRepository.getAllDownloads()
+                .collect { downloads ->
+                    val hadCompleted = _uiState.value.downloads.count { it.status == DownloadItem.Status.COMPLETED }
+                    val nowCompleted = downloads.count { it.status == DownloadItem.Status.COMPLETED }
+                    _uiState.value = _uiState.value.copy(downloads = downloads)
+
+                    // Refresh storage when a download newly completes or list changes size
+                    if (nowCompleted != hadCompleted || downloads.size != _uiState.value.downloads.size) {
+                        // Small delay to let file rename (.tmp -> .mp3) settle
+                        delay(500)
+                    }
+                    refreshStorage()
+                }
         }
     }
 

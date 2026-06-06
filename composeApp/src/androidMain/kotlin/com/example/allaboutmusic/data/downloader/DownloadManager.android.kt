@@ -47,7 +47,7 @@ actual class DownloadManager(private val context: Context) {
         val musicDir = File(context.filesDir, "music")
         if (!musicDir.exists()) return 0L
         return musicDir.listFiles()
-            ?.filter { it.extension == "mp3" }
+            ?.filter { it.extension == "mp3" || it.name.endsWith(".mp3.tmp") }
             ?.sumOf { it.length() }
             ?: 0L
     }
