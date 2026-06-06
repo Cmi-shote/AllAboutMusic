@@ -7,6 +7,7 @@ import com.example.allaboutmusic.data.api.createHttpClient
 import com.example.allaboutmusic.data.database.AppDatabase
 import com.example.allaboutmusic.data.database.getDatabaseBuilder
 import com.example.allaboutmusic.data.downloader.DownloadRepository
+import com.example.allaboutmusic.data.repository.MixRepository
 import com.example.allaboutmusic.data.repository.TrackRepository
 import com.example.allaboutmusic.domain.model.MusicSource
 import com.example.allaboutmusic.domain.usecase.GetFeaturedTracksUseCase
@@ -15,6 +16,9 @@ import com.example.allaboutmusic.domain.usecase.GetTracksByGenreUseCase
 import com.example.allaboutmusic.domain.usecase.SearchTracksUseCase
 import com.example.allaboutmusic.ui.downloads.DownloadsViewModel
 import com.example.allaboutmusic.ui.home.HomeViewModel
+import com.example.allaboutmusic.ui.library.LibraryViewModel
+import com.example.allaboutmusic.ui.mix.MixDetailViewModel
+import com.example.allaboutmusic.ui.mix.MixListViewModel
 import com.example.allaboutmusic.ui.player.PlayerViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -34,10 +38,12 @@ val appModule = module {
     }
     single { get<AppDatabase>().trackDao() }
     single { get<AppDatabase>().downloadQueueDao() }
+    single { get<AppDatabase>().mixDao() }
 
     // Repositories
     single { TrackRepository(get(), get()) }
     single { DownloadRepository(get(), get(), get()) }
+    single { MixRepository(get()) }
 
     // Use cases
     factory { SearchTracksUseCase(get()) }
@@ -49,4 +55,7 @@ val appModule = module {
     viewModel { PlayerViewModel(get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { DownloadsViewModel(get()) }
+    viewModel { LibraryViewModel(get()) }
+    viewModel { MixListViewModel(get()) }
+    viewModel { MixDetailViewModel(get(), get()) }
 }
