@@ -70,7 +70,23 @@ class DownloadRepository(
     }
 
     suspend fun clearCompleted() {
+        // Get completed entries before deleting so we can clean up track localPath
+        val allItems = downloadQueueDao.getAllList()
+        val completedItems = allItems.filter { it.status == "completed" }
+
+        // Remove download queue entries
         downloadQueueDao.clearCompleted()
+
+        // Clear localPath on the track table and delete the files
+        for (item in completedItems) {
+            trackDao.clearLocalPath(item.trackId)
+            item.localPath?.let { path ->
+                try {
+                    val file = java.io.File(path)
+                    file.delete()
+                } catch (_: Exception) { }
+            }
+        }
     }
 
     suspend fun getStorageUsageBytes(): Long {

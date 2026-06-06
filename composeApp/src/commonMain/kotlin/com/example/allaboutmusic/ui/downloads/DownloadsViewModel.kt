@@ -52,6 +52,7 @@ class DownloadsViewModel(
     fun clearCompleted() {
         viewModelScope.launch {
             downloadRepository.clearCompleted()
+            refreshStorage()
         }
     }
 

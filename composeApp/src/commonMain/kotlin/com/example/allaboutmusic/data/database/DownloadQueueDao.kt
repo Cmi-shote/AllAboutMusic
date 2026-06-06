@@ -14,6 +14,9 @@ interface DownloadQueueDao {
     @Query("SELECT * FROM download_queue ORDER BY createdAt DESC")
     fun getAll(): Flow<List<DownloadQueueEntity>>
 
+    @Query("SELECT * FROM download_queue ORDER BY createdAt DESC")
+    suspend fun getAllList(): List<DownloadQueueEntity>
+
     @Query("SELECT * FROM download_queue WHERE id = :id")
     suspend fun getById(id: String): DownloadQueueEntity?
 
