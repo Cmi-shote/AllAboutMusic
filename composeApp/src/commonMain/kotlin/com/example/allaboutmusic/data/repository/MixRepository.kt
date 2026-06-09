@@ -21,11 +21,8 @@ class MixRepository(
     }
 
     fun getAllMixes(): Flow<List<Mix>> {
-        return mixDao.getAllMixes().map { entities ->
-            entities.map { entity ->
-                val count = mixDao.getMixTrackCount(entity.id)
-                entity.toDomain(trackCount = count)
-            }
+        return mixDao.getAllMixesWithTrackCount().map { rows ->
+            rows.map { it.toDomain() }
         }
     }
 

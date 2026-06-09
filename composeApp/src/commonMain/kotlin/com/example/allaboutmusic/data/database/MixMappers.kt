@@ -10,6 +10,13 @@ fun MixEntity.toDomain(trackCount: Int = 0) = Mix(
     trackCount = trackCount
 )
 
+fun MixWithTrackCount.toDomain() = Mix(
+    id = id,
+    name = name,
+    createdAt = createdAt,
+    trackCount = trackCount
+)
+
 fun MixTrackEntity.toDomain() = MixTrack(
     id = id,
     mixId = mixId,

@@ -1,7 +1,9 @@
 package com.example.allaboutmusic.ui.mix
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,21 +12,21 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -35,19 +37,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import com.example.allaboutmusic.domain.model.MixTrack
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.ui.components.formatDuration
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,25 +113,68 @@ fun MixDetailScreen(
                     )
                 }
             } else {
+                val listState = rememberLazyListState()
+                var draggedIndex by remember { mutableIntStateOf(-1) }
+                var dragOffsetY by remember { mutableFloatStateOf(0f) }
+
                 LazyColumn(
+                    state = listState,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier.padding(horizontal = 8.dp)
                 ) {
                     itemsIndexed(state.tracks, key = { _, t -> t.id }) { index, mixTrack ->
-                        MixTrackCard(
-                            mixTrack = mixTrack,
-                            index = index,
-                            isExpanded = state.expandedTrackId == mixTrack.id,
-                            isFirst = index == 0,
-                            isLast = index == state.tracks.lastIndex,
-                            onToggleExpand = { viewModel.toggleExpanded(mixTrack.id) },
-                            onRemove = { viewModel.removeTrack(mixTrack.id) },
-                            onCuePointsChanged = { cueIn, cueOut ->
-                                viewModel.updateCuePoints(mixTrack.id, cueIn, cueOut)
-                            },
-                            onMoveUp = { viewModel.moveTrack(index, index - 1) },
-                            onMoveDown = { viewModel.moveTrack(index, index + 1) }
-                        )
+                        val isDragged = draggedIndex == index
+                        val elevation by animateDpAsState(if (isDragged) 8.dp else 0.dp)
+
+                        Box(
+                            modifier = Modifier
+                                .zIndex(if (isDragged) 1f else 0f)
+                                .then(
+                                    if (isDragged) Modifier.offset {
+                                        IntOffset(0, dragOffsetY.roundToInt())
+                                    } else Modifier
+                                )
+                        ) {
+                            MixTrackCard(
+                                mixTrack = mixTrack,
+                                index = index,
+                                isExpanded = state.expandedTrackId == mixTrack.id,
+                                isDragged = isDragged,
+                                elevation = elevation,
+                                onToggleExpand = { viewModel.toggleExpanded(mixTrack.id) },
+                                onRemove = { viewModel.removeTrack(mixTrack.id) },
+                                onCuePointsChanged = { cueIn, cueOut ->
+                                    viewModel.updateCuePoints(mixTrack.id, cueIn, cueOut)
+                                },
+                                onDragStart = {
+                                    draggedIndex = index
+                                    dragOffsetY = 0f
+                                },
+                                onDrag = { dragAmount ->
+                                    dragOffsetY += dragAmount
+                                    // Calculate target index based on drag offset
+                                    val itemInfo = listState.layoutInfo.visibleItemsInfo
+                                    val currentItem = itemInfo.firstOrNull { it.index == draggedIndex }
+                                    if (currentItem != null) {
+                                        val draggedCenter = currentItem.offset + currentItem.size / 2 + dragOffsetY
+                                        val targetItem = itemInfo.firstOrNull { info ->
+                                            info.index != draggedIndex &&
+                                                draggedCenter.toInt() in info.offset..(info.offset + info.size)
+                                        }
+                                        if (targetItem != null) {
+                                            val targetIndex = targetItem.index
+                                            viewModel.moveTrack(draggedIndex, targetIndex)
+                                            draggedIndex = targetIndex
+                                            dragOffsetY = 0f
+                                        }
+                                    }
+                                },
+                                onDragEnd = {
+                                    draggedIndex = -1
+                                    dragOffsetY = 0f
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -148,28 +200,43 @@ private fun MixTrackCard(
     mixTrack: MixTrack,
     index: Int,
     isExpanded: Boolean,
-    isFirst: Boolean,
-    isLast: Boolean,
+    isDragged: Boolean,
+    elevation: androidx.compose.ui.unit.Dp,
     onToggleExpand: () -> Unit,
     onRemove: () -> Unit,
     onCuePointsChanged: (Long, Long?) -> Unit,
-    onMoveUp: () -> Unit,
-    onMoveDown: () -> Unit
+    onDragStart: () -> Unit,
+    onDrag: (Float) -> Unit,
+    onDragEnd: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
+            .shadow(elevation, RoundedCornerShape(12.dp))
             .clickable { onToggleExpand() },
         colors = CardDefaults.cardColors()
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                // Drag handle
                 Text(
-                    text = "${index + 1}",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.width(28.dp)
+                    text = "≡",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .width(28.dp)
+                        .pointerInput(Unit) {
+                            detectDragGesturesAfterLongPress(
+                                onDragStart = { onDragStart() },
+                                onDrag = { change, offset ->
+                                    change.consume()
+                                    onDrag(offset.y)
+                                },
+                                onDragEnd = { onDragEnd() },
+                                onDragCancel = { onDragEnd() }
+                            )
+                        }
                 )
 
                 AsyncImage(
@@ -199,19 +266,11 @@ private fun MixTrackCard(
                     )
                 }
 
-                // Reorder buttons
-                Column {
-                    if (!isFirst) {
-                        TextButton(onClick = onMoveUp, modifier = Modifier.height(28.dp)) {
-                            Text("^", style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                    if (!isLast) {
-                        TextButton(onClick = onMoveDown, modifier = Modifier.height(28.dp)) {
-                            Text("v", style = MaterialTheme.typography.labelSmall)
-                        }
-                    }
-                }
+                Text(
+                    text = "${index + 1}",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
             // Cue point info summary

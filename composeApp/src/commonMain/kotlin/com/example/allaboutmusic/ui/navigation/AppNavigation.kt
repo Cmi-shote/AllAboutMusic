@@ -143,6 +143,10 @@ fun AppNavigation() {
                         viewModel = mixListViewModel,
                         onMixClick = { mixId ->
                             navController.navigate(MixDetailRoute(mixId))
+                        },
+                        onPlayMix = { mixId ->
+                            playerViewModel.playMix(mixId)
+                            navController.navigate(PlayerRoute)
                         }
                     )
                 }

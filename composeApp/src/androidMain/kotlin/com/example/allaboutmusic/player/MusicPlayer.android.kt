@@ -7,15 +7,14 @@ import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
-import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.ConcatenatingMediaSource
 import androidx.media3.exoplayer.source.ClippingMediaSource
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.ConcatenatingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import com.example.allaboutmusic.domain.model.MixTrack
 import com.example.allaboutmusic.domain.model.Track
@@ -72,6 +71,7 @@ actual class MusicPlayer(context: Context) {
                     val index = currentMediaItemIndex
                     if (index in currentMixTracks.indices) {
                         val mt = currentMixTracks[index]
+                        val duration = if (duration > 0) duration else 0L
                         _playerState.value = _playerState.value.copy(
                             currentTrack = Track(
                                 id = mt.trackId,
@@ -82,10 +82,12 @@ actual class MusicPlayer(context: Context) {
                                 localPath = mt.localPath
                             ),
                             mixTrackIndex = index,
-                            durationMs = 0
+                            durationMs = duration
                         )
                     }
                 }
+                // Reset position for new track
+                _currentPosition.value = 0L
             }
 
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
@@ -222,6 +224,11 @@ actual class MusicPlayer(context: Context) {
         positionJob = scope.launch {
             while (isActive) {
                 _currentPosition.value = exoPlayer.currentPosition
+                // Update duration if not yet known (e.g. after mix track transition)
+                val current = _playerState.value
+                if (current.durationMs <= 0 && exoPlayer.duration > 0) {
+                    _playerState.value = current.copy(durationMs = exoPlayer.duration)
+                }
                 delay(250)
             }
         }

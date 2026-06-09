@@ -15,6 +15,9 @@ interface MixDao {
     @Query("SELECT * FROM mix ORDER BY createdAt DESC")
     fun getAllMixes(): Flow<List<MixEntity>>
 
+    @Query("SELECT m.*, COUNT(mt.id) AS trackCount FROM mix m LEFT JOIN mix_track mt ON m.id = mt.mixId GROUP BY m.id ORDER BY m.createdAt DESC")
+    fun getAllMixesWithTrackCount(): Flow<List<MixWithTrackCount>>
+
     @Query("SELECT * FROM mix WHERE id = :mixId")
     suspend fun getMixById(mixId: String): MixEntity?
 

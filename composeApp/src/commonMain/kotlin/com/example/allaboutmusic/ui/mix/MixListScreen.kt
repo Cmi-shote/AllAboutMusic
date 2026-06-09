@@ -17,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -37,6 +38,7 @@ import com.example.allaboutmusic.domain.model.Mix
 fun MixListScreen(
     viewModel: MixListViewModel,
     onMixClick: (String) -> Unit,
+    onPlayMix: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -75,6 +77,7 @@ fun MixListScreen(
                         MixCard(
                             mix = mix,
                             onClick = { onMixClick(mix.id) },
+                            onPlay = { onPlayMix(mix.id) },
                             onDelete = { viewModel.deleteMix(mix.id) }
                         )
                     }
@@ -95,6 +98,7 @@ fun MixListScreen(
 private fun MixCard(
     mix: Mix,
     onClick: () -> Unit,
+    onPlay: () -> Unit,
     onDelete: () -> Unit
 ) {
     Card(
@@ -117,6 +121,12 @@ private fun MixCard(
                 )
             }
             Spacer(Modifier.width(8.dp))
+            IconButton(
+                onClick = onPlay,
+                enabled = mix.trackCount > 0
+            ) {
+                Text(">", style = MaterialTheme.typography.titleLarge)
+            }
             TextButton(onClick = onDelete) {
                 Text("Delete", color = MaterialTheme.colorScheme.error)
             }

@@ -12,6 +12,13 @@ data class MixEntity(
     val createdAt: Long
 )
 
+data class MixWithTrackCount(
+    val id: String,
+    val name: String,
+    val createdAt: Long,
+    val trackCount: Int
+)
+
 @Entity(
     tableName = "mix_track",
     foreignKeys = [
