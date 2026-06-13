@@ -110,8 +110,10 @@ private fun DownloadButton(
         DownloadItem.Status.PENDING -> {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
                 CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 2.dp
+                    modifier = Modifier.size(28.dp),
+                    strokeWidth = 3.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             }
         }
@@ -119,8 +121,10 @@ private fun DownloadButton(
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
                 CircularProgressIndicator(
                     progress = { progress },
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 2.dp
+                    modifier = Modifier.size(28.dp),
+                    strokeWidth = 3.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             }
         }
