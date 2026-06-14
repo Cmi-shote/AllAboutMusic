@@ -25,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,21 +47,10 @@ fun MixListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.showCreateDialog() }) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Create mix"
-                )
-            }
-        },
-        modifier = modifier
-    ) { padding ->
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(16.dp)
         ) {
             Text("Mixes", style = MaterialTheme.typography.headlineMedium)
@@ -91,6 +79,19 @@ fun MixListScreen(
                     }
                 }
             }
+        }
+
+        // FAB positioned in bottom-end
+        FloatingActionButton(
+            onClick = { viewModel.showCreateDialog() },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Create mix"
+            )
         }
     }
 

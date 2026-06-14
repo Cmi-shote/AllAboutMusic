@@ -1,5 +1,8 @@
 package com.example.allaboutmusic.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,22 +15,35 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -42,26 +58,90 @@ fun HomeScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val listState = rememberLazyListState()
+    var searchVisible by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        // Search bar
-        OutlinedTextField(
-            value = state.searchQuery,
-            onValueChange = viewModel::onSearchQueryChanged,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            placeholder = { Text("Search songs, artists...") },
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search"
-                )
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() })
-        )
+    // Detect overscroll at top (pull down) to reveal search bar
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource
+            ): Offset {
+                // available.y > 0 means unconsumed downward scroll (overscroll at top)
+                if (available.y > 0 && source == NestedScrollSource.UserInput) {
+                    searchVisible = true
+                }
+                return Offset.Zero
+            }
+
+            override fun onPreScroll(
+                available: Offset,
+                source: NestedScrollSource
+            ): Offset {
+                // Scrolling up through content → hide search (only if no active query)
+                if (available.y < 0 && searchVisible &&
+                    listState.firstVisibleItemIndex > 0
+                ) {
+                    searchVisible = false
+                }
+                return Offset.Zero
+            }
+        }
+    }
+
+    // Keep search visible while there's an active query
+    if (state.searchQuery.isNotBlank()) {
+        searchVisible = true
+    }
+
+    // Auto-focus when search bar appears
+    LaunchedEffect(searchVisible) {
+        if (searchVisible && state.searchQuery.isBlank()) {
+            try { focusRequester.requestFocus() } catch (_: Exception) {}
+        }
+    }
+
+    Column(modifier = modifier.fillMaxSize().nestedScroll(nestedScrollConnection)) {
+        // Animated search bar
+        AnimatedVisibility(
+            visible = searchVisible,
+            enter = slideInVertically { -it },
+            exit = slideOutVertically { -it }
+        ) {
+            OutlinedTextField(
+                value = state.searchQuery,
+                onValueChange = viewModel::onSearchQueryChanged,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .focusRequester(focusRequester),
+                placeholder = { Text("Search songs, artists...") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search"
+                    )
+                },
+                trailingIcon = {
+                    IconButton(onClick = {
+                        viewModel.onSearchQueryChanged("")
+                        searchVisible = false
+                        keyboardController?.hide()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = "Close search"
+                        )
+                    }
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { keyboardController?.hide() })
+            )
+        }
 
         // Genre chips
         Row(
@@ -113,7 +193,7 @@ fun HomeScreen(
                 }
             }
             else -> {
-                LazyColumn {
+                LazyColumn(state = listState) {
                     items(state.tracks, key = { it.id }) { track ->
                         val downloadItem = state.downloadStates[track.id]
                         TrackCard(
