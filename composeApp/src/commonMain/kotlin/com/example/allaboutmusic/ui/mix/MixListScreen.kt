@@ -13,10 +13,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -46,7 +51,10 @@ fun MixListScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { viewModel.showCreateDialog() }) {
-                Text("+", style = MaterialTheme.typography.headlineSmall)
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Create mix"
+                )
             }
         },
         modifier = modifier
@@ -125,10 +133,18 @@ private fun MixCard(
                 onClick = onPlay,
                 enabled = mix.trackCount > 0
             ) {
-                Text(">", style = MaterialTheme.typography.titleLarge)
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = "Play mix",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-            TextButton(onClick = onDelete) {
-                Text("Delete", color = MaterialTheme.colorScheme.error)
+            IconButton(onClick = onDelete) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Delete mix",
+                    tint = MaterialTheme.colorScheme.error
+                )
             }
         }
     }

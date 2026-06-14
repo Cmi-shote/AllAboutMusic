@@ -21,10 +21,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -78,12 +85,21 @@ fun MixDetailScreen(
             TopAppBar(
                 title = { Text(state.mix?.name ?: "Mix") },
                 navigationIcon = {
-                    TextButton(onClick = onBack) { Text("<") }
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
                 },
                 actions = {
                     if (state.tracks.isNotEmpty()) {
-                        TextButton(onClick = { onPlayMix(mixId) }) {
-                            Text("Play")
+                        IconButton(onClick = { onPlayMix(mixId) }) {
+                            Icon(
+                                imageVector = Icons.Filled.PlayArrow,
+                                contentDescription = "Play mix",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
@@ -91,7 +107,10 @@ fun MixDetailScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { viewModel.showAddTrackSheet() }) {
-                Text("+", style = MaterialTheme.typography.headlineSmall)
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add track"
+                )
             }
         },
         modifier = modifier
@@ -220,12 +239,12 @@ private fun MixTrackCard(
         Column(modifier = Modifier.padding(12.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 // Drag handle
-                Text(
-                    text = "≡",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Icon(
+                    imageVector = Icons.Filled.DragHandle,
+                    contentDescription = "Reorder",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
-                        .width(28.dp)
+                        .size(24.dp)
                         .pointerInput(Unit) {
                             detectDragGesturesAfterLongPress(
                                 onDragStart = { onDragStart() },
@@ -238,6 +257,8 @@ private fun MixTrackCard(
                             )
                         }
                 )
+
+                Spacer(Modifier.width(8.dp))
 
                 AsyncImage(
                     model = mixTrack.coverUrl,
@@ -280,7 +301,7 @@ private fun MixTrackCard(
                 text = "Cue: $cueInText - $cueOutText",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 28.dp, top = 4.dp)
+                modifier = Modifier.padding(start = 32.dp, top = 4.dp)
             )
 
             // Expanded cue-point editor
@@ -311,7 +332,7 @@ private fun CuePointEditor(
     }
     var useFullEnd by remember(mixTrack.id) { mutableStateOf(mixTrack.cueOutMs == null) }
 
-    Column(modifier = Modifier.padding(start = 28.dp)) {
+    Column(modifier = Modifier.padding(start = 32.dp)) {
         Text("Cue In: ${formatDuration(cueIn.toLong())}", style = MaterialTheme.typography.labelMedium)
         Slider(
             value = cueIn,

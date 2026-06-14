@@ -10,10 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.graphics.PathFillType
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.path
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -101,7 +100,7 @@ private fun DownloadButton(
     when (status) {
         DownloadItem.Status.COMPLETED -> {
             Icon(
-                imageVector = CheckIcon,
+                imageVector = Icons.Filled.CheckCircle,
                 contentDescription = "Downloaded",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(24.dp)
@@ -131,7 +130,7 @@ private fun DownloadButton(
         else -> {
             IconButton(onClick = onClick) {
                 Icon(
-                    imageVector = DownloadIcon,
+                    imageVector = Icons.Outlined.Download,
                     contentDescription = "Download",
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -145,52 +144,4 @@ fun formatDuration(ms: Long): String {
     val minutes = totalSeconds / 60
     val seconds = totalSeconds % 60
     return "$minutes:${seconds.toString().padStart(2, '0')}"
-}
-
-private val DownloadIcon: ImageVector by lazy {
-    ImageVector.Builder(
-        name = "Download", defaultWidth = 24.dp, defaultHeight = 24.dp,
-        viewportWidth = 24f, viewportHeight = 24f
-    ).apply {
-        path(fill = SolidColor(androidx.compose.ui.graphics.Color.Black)) {
-            // Arrow down
-            moveTo(12f, 16f)
-            lineTo(7f, 11f)
-            lineTo(8.4f, 9.55f)
-            lineTo(11f, 12.15f)
-            lineTo(11f, 4f)
-            lineTo(13f, 4f)
-            lineTo(13f, 12.15f)
-            lineTo(15.6f, 9.55f)
-            lineTo(17f, 11f)
-            close()
-            // Tray
-            moveTo(4f, 20f)
-            lineTo(4f, 17f)
-            lineTo(6f, 17f)
-            lineTo(6f, 18f)
-            lineTo(18f, 18f)
-            lineTo(18f, 17f)
-            lineTo(20f, 17f)
-            lineTo(20f, 20f)
-            close()
-        }
-    }.build()
-}
-
-private val CheckIcon: ImageVector by lazy {
-    ImageVector.Builder(
-        name = "Check", defaultWidth = 24.dp, defaultHeight = 24.dp,
-        viewportWidth = 24f, viewportHeight = 24f
-    ).apply {
-        path(fill = SolidColor(androidx.compose.ui.graphics.Color.Black)) {
-            moveTo(9f, 16.17f)
-            lineTo(4.83f, 12f)
-            lineTo(3.41f, 13.41f)
-            lineTo(9f, 19f)
-            lineTo(21f, 7f)
-            lineTo(19.59f, 5.59f)
-            close()
-        }
-    }.build()
 }

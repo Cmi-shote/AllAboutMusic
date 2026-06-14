@@ -4,6 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.automirrored.filled.QueueMusic
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -12,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.toRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -43,14 +51,14 @@ import org.koin.compose.viewmodel.koinViewModel
 data class BottomNavItem(
     val label: String,
     val route: Any,
-    val icon: String
+    val icon: ImageVector
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("Home", HomeRoute, "H"),
-    BottomNavItem("Library", LibraryRoute, "L"),
-    BottomNavItem("Mixes", MixListRoute, "M"),
-    BottomNavItem("Downloads", DownloadsRoute, "D")
+    BottomNavItem("Home", HomeRoute, Icons.Filled.Home),
+    BottomNavItem("Library", LibraryRoute, Icons.Filled.LibraryMusic),
+    BottomNavItem("Mixes", MixListRoute, Icons.AutoMirrored.Filled.QueueMusic),
+    BottomNavItem("Downloads", DownloadsRoute, Icons.Outlined.Download)
 )
 
 @Composable
@@ -107,7 +115,12 @@ fun AppNavigation() {
                                     }
                                 },
                                 label = { Text(item.label) },
-                                icon = { Text(item.icon) }
+                                icon = {
+                                    Icon(
+                                        imageVector = item.icon,
+                                        contentDescription = item.label
+                                    )
+                                }
                             )
                         }
                     }
@@ -151,10 +164,10 @@ fun AppNavigation() {
                     )
                 }
                 composable<MixDetailRoute> { backStackEntry ->
-                    val route = backStackEntry.arguments?.getString("mixId") ?: return@composable
+                    val route = backStackEntry.toRoute<MixDetailRoute>()
                     MixDetailScreen(
                         viewModel = mixDetailViewModel,
-                        mixId = route,
+                        mixId = route.mixId,
                         onBack = { navController.popBackStack() },
                         onPlayMix = { mixId ->
                             playerViewModel.playMix(mixId)
