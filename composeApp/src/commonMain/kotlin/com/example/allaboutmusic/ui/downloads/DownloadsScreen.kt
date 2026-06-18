@@ -1,5 +1,7 @@
 package com.example.allaboutmusic.ui.downloads
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -87,7 +89,8 @@ fun DownloadsScreen(
                             }
                         },
                         onCancel = { viewModel.cancelDownload(item.id) },
-                        onRetry = { viewModel.retryDownload(item.id) }
+                        onRetry = { viewModel.retryDownload(item.id) },
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
@@ -100,10 +103,11 @@ private fun DownloadItemCard(
     item: DownloadItem,
     onClick: () -> Unit,
     onCancel: () -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable(enabled = item.status == DownloadItem.Status.COMPLETED) { onClick() },
         colors = CardDefaults.cardColors()
@@ -138,40 +142,47 @@ private fun DownloadItemCard(
 
                 Spacer(Modifier.height(4.dp))
 
-                when (item.status) {
-                    DownloadItem.Status.PENDING -> {
-                        Text("Waiting...", style = MaterialTheme.typography.labelSmall)
-                    }
-                    DownloadItem.Status.DOWNLOADING -> {
-                        LinearProgressIndicator(
-                            progress = { item.progress },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Text(
-                            "${(item.progress * 100).toInt()}%",
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                    DownloadItem.Status.COMPLETED -> {
-                        Text(
-                            "Completed",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    DownloadItem.Status.FAILED -> {
-                        Text(
-                            item.errorMessage ?: "Failed",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                    DownloadItem.Status.CANCELLED -> {
-                        Text(
-                            "Cancelled",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                Crossfade(
+                    targetState = item.status,
+                    animationSpec = tween(300)
+                ) { status ->
+                    Column {
+                        when (status) {
+                            DownloadItem.Status.PENDING -> {
+                                Text("Waiting...", style = MaterialTheme.typography.labelSmall)
+                            }
+                            DownloadItem.Status.DOWNLOADING -> {
+                                LinearProgressIndicator(
+                                    progress = { item.progress },
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Text(
+                                    "${(item.progress * 100).toInt()}%",
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            }
+                            DownloadItem.Status.COMPLETED -> {
+                                Text(
+                                    "Completed",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            DownloadItem.Status.FAILED -> {
+                                Text(
+                                    item.errorMessage ?: "Failed",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                            DownloadItem.Status.CANCELLED -> {
+                                Text(
+                                    "Cancelled",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
                     }
                 }
             }

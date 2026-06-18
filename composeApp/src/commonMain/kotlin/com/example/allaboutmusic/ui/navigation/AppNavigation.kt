@@ -1,5 +1,10 @@
 package com.example.allaboutmusic.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -83,7 +88,11 @@ fun AppNavigation() {
             if (!hideBottomBar) {
                 Column {
                     // Mini player
-                    if (playerState.currentTrack != null) {
+                    AnimatedVisibility(
+                        visible = playerState.currentTrack != null,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut()
+                    ) {
                         MiniPlayer(
                             state = playerState,
                             currentPosition = currentPosition,

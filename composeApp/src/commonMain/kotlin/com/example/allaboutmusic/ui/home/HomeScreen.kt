@@ -199,6 +199,7 @@ fun HomeScreen(
                         TrackCard(
                             track = track,
                             onClick = { onTrackClick(track) },
+                            modifier = Modifier.animateItem(),
                             downloadStatus = downloadItem?.status,
                             downloadProgress = downloadItem?.progress ?: 0f,
                             onDownloadClick = { viewModel.downloadTrack(track) }

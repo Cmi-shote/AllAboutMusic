@@ -74,7 +74,8 @@ fun MixListScreen(
                             mix = mix,
                             onClick = { onMixClick(mix.id) },
                             onPlay = { onPlayMix(mix.id) },
-                            onDelete = { viewModel.deleteMix(mix.id) }
+                            onDelete = { viewModel.deleteMix(mix.id) },
+                            modifier = Modifier.animateItem()
                         )
                     }
                 }
@@ -108,10 +109,11 @@ private fun MixCard(
     mix: Mix,
     onClick: () -> Unit,
     onPlay: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        modifier = modifier.fillMaxWidth().clickable { onClick() },
         colors = CardDefaults.cardColors()
     ) {
         Row(

@@ -1,5 +1,7 @@
 package com.example.allaboutmusic.ui.components
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,43 +99,50 @@ private fun DownloadButton(
     progress: Float,
     onClick: () -> Unit
 ) {
-    when (status) {
-        DownloadItem.Status.COMPLETED -> {
-            Icon(
-                imageVector = Icons.Filled.CheckCircle,
-                contentDescription = "Downloaded",
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        DownloadItem.Status.PENDING -> {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(28.dp),
-                    strokeWidth = 3.dp,
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant
-                )
+    Crossfade(
+        targetState = status,
+        animationSpec = tween(300)
+    ) { currentStatus ->
+        when (currentStatus) {
+            DownloadItem.Status.COMPLETED -> {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = "Downloaded",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
             }
-        }
-        DownloadItem.Status.DOWNLOADING -> {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
-                CircularProgressIndicator(
-                    progress = { progress },
-                    modifier = Modifier.size(28.dp),
-                    strokeWidth = 3.dp,
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant
-                )
+            DownloadItem.Status.PENDING -> {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(28.dp),
+                        strokeWidth = 3.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
             }
-        }
-        else -> {
-            IconButton(onClick = onClick) {
-                Icon(
-                    imageVector = Icons.Outlined.Download,
-                    contentDescription = "Download",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            DownloadItem.Status.DOWNLOADING -> {
+                Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
+                    CircularProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier.size(28.dp),
+                        strokeWidth = 3.dp,
+                        color = MaterialTheme.colorScheme.primary,
+                        trackColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
+            }
+            else -> {
+                IconButton(onClick = onClick) {
+                    Icon(
+                        imageVector = Icons.Outlined.Download,
+                        contentDescription = "Download",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }

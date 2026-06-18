@@ -1,5 +1,7 @@
 package com.example.allaboutmusic.ui.components
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -88,11 +90,16 @@ fun MiniPlayer(
                 }
 
                 IconButton(onClick = onTogglePlayPause) {
-                    Icon(
-                        imageVector = if (state.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                        contentDescription = if (state.isPlaying) "Pause" else "Play",
-                        modifier = Modifier.size(28.dp)
-                    )
+                    Crossfade(
+                        targetState = state.isPlaying,
+                        animationSpec = tween(200)
+                    ) { isPlaying ->
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
                 }
             }
         }

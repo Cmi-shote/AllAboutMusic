@@ -53,7 +53,8 @@ fun LibraryScreen(
                 items(state.downloadedTracks, key = { it.id }) { track ->
                     TrackCard(
                         track = track,
-                        onClick = { onTrackClick(track) }
+                        onClick = { onTrackClick(track) },
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
