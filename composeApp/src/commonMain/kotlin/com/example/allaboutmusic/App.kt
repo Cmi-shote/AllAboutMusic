@@ -6,16 +6,17 @@ import com.example.allaboutmusic.di.appModule
 import com.example.allaboutmusic.di.platformModule
 import com.example.allaboutmusic.ui.navigation.AppNavigation
 import org.koin.compose.KoinApplication
-import org.koin.core.parameter.parametersOf
 
 @Composable
-fun App() {
+fun App(
+    onRequestAudioPermission: ((Boolean) -> Unit) -> Unit = {}
+) {
     KoinApplication(application = {
         properties(mapOf("JAMENDO_CLIENT_ID" to "72cec4ca"))
         modules(appModule, platformModule)
     }) {
         MaterialTheme {
-            AppNavigation()
+            AppNavigation(onRequestAudioPermission = onRequestAudioPermission)
         }
     }
 }

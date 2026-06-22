@@ -4,6 +4,8 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>AllAboutMusic needs access to your music library to display and play your songs.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

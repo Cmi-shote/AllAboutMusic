@@ -55,7 +55,7 @@ val appModule = module {
     viewModel { PlayerViewModel(get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { DownloadsViewModel(get()) }
-    viewModel { LibraryViewModel(get()) }
+    viewModel { LibraryViewModel(get(), get()) }
     viewModel { MixListViewModel(get()) }
-    viewModel { MixDetailViewModel(get(), get()) }
+    viewModel { MixDetailViewModel(get(), get(), get()) }
 }

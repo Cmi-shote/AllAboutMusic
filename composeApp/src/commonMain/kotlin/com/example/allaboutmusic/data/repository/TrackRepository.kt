@@ -53,4 +53,27 @@ class TrackRepository(
     suspend fun updateLocalPath(trackId: String, localPath: String, downloadedAt: Long) {
         trackDao.updateLocalPath(trackId, localPath, downloadedAt)
     }
+
+    suspend fun syncLocalTracks(tracks: List<Track>) {
+        trackDao.insertTracks(tracks.map { it.toEntity() })
+        val activeIds = tracks.map { it.id }
+        if (activeIds.isNotEmpty()) {
+            trackDao.deleteStaleLocalTracks(activeIds)
+        }
+    }
+
+    fun getLocalTracks(): Flow<List<Track>> {
+        return trackDao.getLocalTracks().map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    fun getPlayableTracks(): Flow<List<Track>> {
+        return kotlinx.coroutines.flow.combine(
+            getDownloadedTracks(),
+            getLocalTracks()
+        ) { downloaded, local ->
+            (downloaded + local).distinctBy { it.id }
+        }
+    }
 }

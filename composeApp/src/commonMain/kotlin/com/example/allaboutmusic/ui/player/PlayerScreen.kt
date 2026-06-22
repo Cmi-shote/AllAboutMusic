@@ -126,11 +126,13 @@ fun PlayerScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Text(
-                text = "via Jamendo (CC BY)",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            if (track.source == "jamendo") {
+                Text(
+                    text = "via Jamendo (CC BY)",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             // Mix mode indicator
             if (state.isMixMode) {

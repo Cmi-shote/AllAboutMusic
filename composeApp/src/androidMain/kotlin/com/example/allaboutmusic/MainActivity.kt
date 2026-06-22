@@ -21,6 +21,15 @@ class MainActivity : ComponentActivity() {
         ActivityResultContracts.RequestPermission()
     ) { /* no-op — downloads still work, just silently */ }
 
+    private var audioPermissionCallback: ((Boolean) -> Unit)? = null
+
+    private val audioPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        audioPermissionCallback?.invoke(granted)
+        audioPermissionCallback = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -30,7 +39,17 @@ class MainActivity : ComponentActivity() {
         requestNotificationPermission()
 
         setContent {
-            App()
+            App(
+                onRequestAudioPermission = { callback ->
+                    audioPermissionCallback = callback
+                    val permission = if (Build.VERSION.SDK_INT >= 33) {
+                        Manifest.permission.READ_MEDIA_AUDIO
+                    } else {
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    }
+                    audioPermissionLauncher.launch(permission)
+                }
+            )
         }
     }
 

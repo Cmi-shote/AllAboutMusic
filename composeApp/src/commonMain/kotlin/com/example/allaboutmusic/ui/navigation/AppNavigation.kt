@@ -67,7 +67,9 @@ val bottomNavItems = listOf(
 )
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    onRequestAudioPermission: ((Boolean) -> Unit) -> Unit = {}
+) {
     val navController = rememberNavController()
     val playerViewModel: PlayerViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
@@ -157,6 +159,11 @@ fun AppNavigation() {
                         onTrackClick = { track ->
                             playerViewModel.playTrack(track)
                             navController.navigate(PlayerRoute)
+                        },
+                        onRequestPermission = {
+                            onRequestAudioPermission { granted: Boolean ->
+                                libraryViewModel.onPermissionResult(granted)
+                            }
                         }
                     )
                 }

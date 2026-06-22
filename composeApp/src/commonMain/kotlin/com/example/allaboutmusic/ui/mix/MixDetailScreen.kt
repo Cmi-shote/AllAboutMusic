@@ -25,11 +25,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -94,6 +97,16 @@ fun MixDetailScreen(
                 },
                 actions = {
                     if (state.tracks.isNotEmpty()) {
+                        IconButton(
+                            onClick = { viewModel.exportMix() },
+                            enabled = !state.isExporting
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.IosShare,
+                                contentDescription = "Export mix",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                         IconButton(onClick = { onPlayMix(mixId) }) {
                             Icon(
                                 imageVector = Icons.Filled.PlayArrow,
@@ -211,6 +224,53 @@ fun MixDetailScreen(
                 onTrackSelected = { viewModel.addTrack(it) }
             )
         }
+    }
+
+    // Export progress dialog
+    if (state.isExporting) {
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {},
+            title = { Text("Exporting Mix") },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    LinearProgressIndicator(
+                        progress = { state.exportProgress },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text("${(state.exportProgress * 100).toInt()}%")
+                }
+            }
+        )
+    }
+
+    // Export success dialog
+    if (state.exportResult != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearExportResult() },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearExportResult() }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Export Complete") },
+            text = { Text("Saved to: ${state.exportResult}") }
+        )
+    }
+
+    // Error dialog
+    if (state.error != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearError() },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearError() }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Error") },
+            text = { Text(state.error ?: "") }
+        )
     }
 }
 

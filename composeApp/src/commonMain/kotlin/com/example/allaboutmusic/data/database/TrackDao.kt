@@ -32,4 +32,13 @@ interface TrackDao {
 
     @Query("DELETE FROM track WHERE id = :id")
     suspend fun deleteTrack(id: String)
+
+    @Query("SELECT * FROM track WHERE source = 'local' ORDER BY title ASC")
+    fun getLocalTracks(): Flow<List<TrackEntity>>
+
+    @Query("SELECT id FROM track WHERE source = 'local'")
+    suspend fun getLocalTrackIds(): List<String>
+
+    @Query("DELETE FROM track WHERE source = 'local' AND id NOT IN (:activeIds)")
+    suspend fun deleteStaleLocalTracks(activeIds: List<String>)
 }

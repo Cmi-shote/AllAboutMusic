@@ -2,6 +2,7 @@ package com.example.allaboutmusic.ui.mix
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.allaboutmusic.data.export.MixExporter
 import com.example.allaboutmusic.data.repository.MixRepository
 import com.example.allaboutmusic.data.repository.TrackRepository
 import com.example.allaboutmusic.domain.model.Mix
@@ -18,12 +19,16 @@ data class MixDetailUiState(
     val availableTracks: List<Track> = emptyList(),
     val showAddTrackSheet: Boolean = false,
     val expandedTrackId: String? = null,
+    val isExporting: Boolean = false,
+    val exportProgress: Float = 0f,
+    val exportResult: String? = null,
     val error: String? = null
 )
 
 class MixDetailViewModel(
     private val mixRepository: MixRepository,
-    private val trackRepository: TrackRepository
+    private val trackRepository: TrackRepository,
+    private val mixExporter: MixExporter
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MixDetailUiState())
@@ -51,7 +56,7 @@ class MixDetailViewModel(
 
     fun showAddTrackSheet() {
         viewModelScope.launch {
-            trackRepository.getDownloadedTracks().collect { tracks ->
+            trackRepository.getPlayableTracks().collect { tracks ->
                 _uiState.value = _uiState.value.copy(
                     showAddTrackSheet = true,
                     availableTracks = tracks
@@ -114,6 +119,49 @@ class MixDetailViewModel(
         viewModelScope.launch {
             mixRepository.reorderTracks(mixId, current.map { it.id })
         }
+    }
+
+    fun exportMix() {
+        val mix = _uiState.value.mix ?: return
+        val tracks = _uiState.value.tracks
+        if (tracks.isEmpty()) {
+            _uiState.value = _uiState.value.copy(error = "No tracks to export")
+            return
+        }
+        val missingLocal = tracks.filter { it.localPath == null }
+        if (missingLocal.isNotEmpty()) {
+            _uiState.value = _uiState.value.copy(
+                error = "Some tracks are not downloaded: ${missingLocal.joinToString { it.title }}"
+            )
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isExporting = true, exportProgress = 0f)
+            val result = mixExporter.exportMix(
+                mixName = mix.name,
+                mixTracks = tracks,
+                onProgress = { progress ->
+                    _uiState.value = _uiState.value.copy(exportProgress = progress)
+                }
+            )
+            result.onSuccess { path ->
+                _uiState.value = _uiState.value.copy(
+                    isExporting = false,
+                    exportResult = path,
+                    exportProgress = 1f
+                )
+            }.onFailure { e ->
+                _uiState.value = _uiState.value.copy(
+                    isExporting = false,
+                    error = "Export failed: ${e.message}"
+                )
+            }
+        }
+    }
+
+    fun clearExportResult() {
+        _uiState.value = _uiState.value.copy(exportResult = null)
     }
 
     fun clearError() {
