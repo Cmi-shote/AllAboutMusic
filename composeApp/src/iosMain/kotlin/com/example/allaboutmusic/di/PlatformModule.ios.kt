@@ -6,5 +6,5 @@ import org.koin.dsl.module
 
 actual val platformModule = module {
     single { MusicPlayer() }
-    single { DownloadManager() }
+    single { DownloadManager(database = get(), jamendoApi = get()) }
 }
