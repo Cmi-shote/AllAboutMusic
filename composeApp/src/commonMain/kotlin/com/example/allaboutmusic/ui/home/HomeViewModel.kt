@@ -3,6 +3,7 @@ package com.example.allaboutmusic.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.allaboutmusic.data.downloader.DownloadRepository
+import com.example.allaboutmusic.data.downloader.InsufficientStorageException
 import com.example.allaboutmusic.domain.model.DownloadItem
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.domain.usecase.GetFeaturedTracksUseCase
@@ -101,7 +102,11 @@ class HomeViewModel(
 
     fun downloadTrack(track: Track) {
         viewModelScope.launch {
-            downloadRepository.enqueueDownload(track)
+            try {
+                downloadRepository.enqueueDownload(track)
+            } catch (e: InsufficientStorageException) {
+                _uiState.value = _uiState.value.copy(error = e.message)
+            }
         }
     }
 
