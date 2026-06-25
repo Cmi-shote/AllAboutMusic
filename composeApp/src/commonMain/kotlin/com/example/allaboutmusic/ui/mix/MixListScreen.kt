@@ -229,17 +229,18 @@ private fun CreateMixDialog(
                         .clickable { imagePicker.launch() },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (coverImagePath != null) {
-                        AsyncImage(
-                            model = coverImagePath,
-                            contentDescription = "Mix cover",
-                            modifier = Modifier
-                                .size(80.dp)
-                                .clip(RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Box(modifier = Modifier.size(88.dp)) {
+                    Box(modifier = Modifier.size(88.dp)) {
+                        if (coverImagePath != null) {
+                            AsyncImage(
+                                model = coverImagePath,
+                                contentDescription = "Mix cover",
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .align(Alignment.TopStart)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
                             Box(
                                 modifier = Modifier
                                     .size(80.dp)
@@ -255,21 +256,21 @@ private fun CreateMixDialog(
                                     modifier = Modifier.size(32.dp)
                                 )
                             }
-                            Box(
-                                modifier = Modifier
-                                    .size(22.dp)
-                                    .align(Alignment.BottomEnd)
-                                    .clip(RoundedCornerShape(50))
-                                    .background(MaterialTheme.colorScheme.primary),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Edit,
-                                    contentDescription = "Edit",
-                                    tint = MaterialTheme.colorScheme.onPrimary,
-                                    modifier = Modifier.size(13.dp)
-                                )
-                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .size(22.dp)
+                                .align(Alignment.BottomEnd)
+                                .clip(RoundedCornerShape(50))
+                                .background(MaterialTheme.colorScheme.primary),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Edit",
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(13.dp)
+                            )
                         }
                     }
                 }
