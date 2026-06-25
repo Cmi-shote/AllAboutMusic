@@ -105,6 +105,8 @@ fun HomeScreen(
     }
 
     Column(modifier = modifier.fillMaxSize().nestedScroll(nestedScrollConnection)) {
+        Spacer(Modifier.height(8.dp))
+
         // Animated search bar
         AnimatedVisibility(
             visible = searchVisible,

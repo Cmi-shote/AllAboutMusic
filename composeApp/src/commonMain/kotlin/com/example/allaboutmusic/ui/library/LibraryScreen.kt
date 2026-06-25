@@ -38,7 +38,8 @@ fun LibraryScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
 
-    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
+        Spacer(Modifier.height(8.dp))
         Text("Library", style = MaterialTheme.typography.headlineMedium)
         Spacer(Modifier.height(8.dp))
 

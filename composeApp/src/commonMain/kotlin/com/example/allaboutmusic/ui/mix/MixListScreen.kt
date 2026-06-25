@@ -51,8 +51,9 @@ fun MixListScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp)
         ) {
+            Spacer(Modifier.height(8.dp))
             Text("Mixes", style = MaterialTheme.typography.headlineMedium)
             Spacer(Modifier.height(8.dp))
 
