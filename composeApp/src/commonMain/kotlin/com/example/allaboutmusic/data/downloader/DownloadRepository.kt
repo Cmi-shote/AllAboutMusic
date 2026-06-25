@@ -17,8 +17,18 @@ class DownloadRepository(
     private val trackDao: TrackDao,
     private val downloadManager: DownloadManager
 ) {
+    companion object {
+        private const val MIN_FREE_SPACE_BYTES = 50L * 1024 * 1024 // 50MB
+    }
+
     @OptIn(ExperimentalUuidApi::class)
     suspend fun enqueueDownload(track: Track): String {
+        // Check device free space before starting
+        val freeSpace = getDeviceFreeSpaceBytes()
+        if (freeSpace < MIN_FREE_SPACE_BYTES) {
+            throw InsufficientStorageException()
+        }
+
         // Save track to DB first
         trackDao.insertTrack(track.toEntity())
 
@@ -118,3 +128,8 @@ private fun String.toDownloadStatus(): DownloadItem.Status {
 
 expect fun currentTimeMillis(): Long
 expect fun deleteFile(path: String): Boolean
+expect fun getDeviceFreeSpaceBytes(): Long
+
+class InsufficientStorageException : Exception(
+    "Not enough storage space. Please free up some space and try again."
+)
