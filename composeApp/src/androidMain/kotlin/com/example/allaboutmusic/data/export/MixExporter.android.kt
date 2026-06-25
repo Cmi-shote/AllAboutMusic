@@ -2,6 +2,7 @@ package com.example.allaboutmusic.data.export
 
 import android.content.ContentValues
 import android.content.Context
+import android.media.AudioFormat
 import android.media.MediaCodec
 import android.media.MediaCodecInfo
 import android.media.MediaExtractor
@@ -12,11 +13,23 @@ import android.os.Environment
 import android.provider.MediaStore
 import com.example.allaboutmusic.domain.model.MixTrack
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import kotlin.coroutines.coroutineContext
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 actual class MixExporter(private val context: Context) {
+
+    private data class DecodedAudio(
+        val pcm: ShortArray,
+        val sampleRate: Int,
+        val channels: Int
+    )
 
     actual suspend fun exportMix(
         mixName: String,
@@ -28,17 +41,20 @@ actual class MixExporter(private val context: Context) {
             val tempFile = File(context.cacheDir, "${sanitizedName}_export.m4a")
 
             // Decode all tracks to PCM, respecting cue points
-            val sampleRate = 44100
-            val channels = 2
+            val outputSampleRate = 44100
+            val outputChannels = 2
             val allPcm = mutableListOf<ShortArray>()
             val totalTracks = mixTracks.size
 
             for ((index, mixTrack) in mixTracks.withIndex()) {
+                if (!coroutineContext.isActive) return@withContext Result.failure(Exception("Cancelled"))
                 val localPath = mixTrack.localPath
                     ?: return@withContext Result.failure(Exception("Track '${mixTrack.title}' has no local file"))
 
-                val pcm = decodeToTrimmedPcm(localPath, mixTrack.cueInMs, mixTrack.cueOutMs, sampleRate, channels)
-                allPcm.add(pcm)
+                val decoded = decodeToTrimmedPcm(localPath, mixTrack.cueInMs, mixTrack.cueOutMs)
+                // Resample if needed
+                val resampled = resampleIfNeeded(decoded, outputSampleRate, outputChannels)
+                allPcm.add(resampled)
                 onProgress((index + 1).toFloat() / (totalTracks * 2))
             }
 
@@ -52,7 +68,7 @@ actual class MixExporter(private val context: Context) {
             }
 
             // Encode to AAC M4A
-            encodePcmToM4a(combined, sampleRate, channels, tempFile) { encodeProgress ->
+            encodePcmToM4a(combined, outputSampleRate, outputChannels, tempFile) { encodeProgress ->
                 onProgress(0.5f + encodeProgress * 0.5f)
             }
 
@@ -66,13 +82,53 @@ actual class MixExporter(private val context: Context) {
         }
     }
 
+    private fun resampleIfNeeded(decoded: DecodedAudio, targetRate: Int, targetChannels: Int): ShortArray {
+        var pcm = decoded.pcm
+        val srcChannels = decoded.channels
+        val srcRate = decoded.sampleRate
+
+        // Convert mono to stereo or stereo to mono if needed
+        if (srcChannels == 1 && targetChannels == 2) {
+            val stereo = ShortArray(pcm.size * 2)
+            for (i in pcm.indices) {
+                stereo[i * 2] = pcm[i]
+                stereo[i * 2 + 1] = pcm[i]
+            }
+            pcm = stereo
+        } else if (srcChannels == 2 && targetChannels == 1) {
+            val mono = ShortArray(pcm.size / 2)
+            for (i in mono.indices) {
+                mono[i] = ((pcm[i * 2].toInt() + pcm[i * 2 + 1].toInt()) / 2).toShort()
+            }
+            pcm = mono
+        }
+
+        // Resample if sample rates differ
+        if (srcRate != targetRate) {
+            val frames = pcm.size / targetChannels
+            val newFrames = (frames.toLong() * targetRate / srcRate).toInt()
+            val resampled = ShortArray(newFrames * targetChannels)
+            for (f in 0 until newFrames) {
+                val srcPos = f.toDouble() * (frames - 1) / (newFrames - 1)
+                val srcIdx = srcPos.toInt()
+                val frac = srcPos - srcIdx
+                for (ch in 0 until targetChannels) {
+                    val s0 = pcm[min(srcIdx * targetChannels + ch, pcm.size - 1)].toInt()
+                    val s1 = pcm[min((srcIdx + 1) * targetChannels + ch, pcm.size - 1)].toInt()
+                    resampled[f * targetChannels + ch] = (s0 + (s1 - s0) * frac).roundToInt().toShort()
+                }
+            }
+            pcm = resampled
+        }
+
+        return pcm
+    }
+
     private fun decodeToTrimmedPcm(
         filePath: String,
         cueInMs: Long,
-        cueOutMs: Long?,
-        targetSampleRate: Int,
-        targetChannels: Int
-    ): ShortArray {
+        cueOutMs: Long?
+    ): DecodedAudio {
         val extractor = MediaExtractor()
         extractor.setDataSource(filePath)
 
@@ -96,6 +152,11 @@ actual class MixExporter(private val context: Context) {
             extractor.seekTo(cueInMs * 1000, MediaExtractor.SEEK_TO_CLOSEST_SYNC)
         }
 
+        // Force 16-bit PCM output if supported (API 24+)
+        if (Build.VERSION.SDK_INT >= 24) {
+            format.setInteger(MediaFormat.KEY_PCM_ENCODING, AudioFormat.ENCODING_PCM_16BIT)
+        }
+
         val decoder = MediaCodec.createDecoderByType(mime)
         decoder.configure(format, null, null, 0)
         decoder.start()
@@ -105,6 +166,7 @@ actual class MixExporter(private val context: Context) {
         val bufferInfo = MediaCodec.BufferInfo()
         var inputDone = false
         var outputDone = false
+        var outputFormat: MediaFormat? = null
 
         while (!outputDone) {
             if (!inputDone) {
@@ -117,7 +179,6 @@ actual class MixExporter(private val context: Context) {
                         inputDone = true
                     } else {
                         val sampleTimeUs = extractor.sampleTime
-                        // Stop feeding if past cue-out
                         if (cueOutUs != null && sampleTimeUs > cueOutUs) {
                             decoder.queueInputBuffer(inputIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
                             inputDone = true
@@ -130,20 +191,55 @@ actual class MixExporter(private val context: Context) {
             }
 
             val outputIndex = decoder.dequeueOutputBuffer(bufferInfo, 10_000)
-            if (outputIndex >= 0) {
-                if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
-                    outputDone = true
+            when {
+                outputIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> {
+                    outputFormat = decoder.outputFormat
                 }
-                val outputBuffer = decoder.getOutputBuffer(outputIndex) ?: continue
-                val shortCount = bufferInfo.size / 2
-                if (shortCount > 0) {
-                    val shorts = ShortArray(shortCount)
-                    outputBuffer.asShortBuffer().get(shorts)
-                    pcmChunks.add(shorts)
+                outputIndex >= 0 -> {
+                    if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) {
+                        outputDone = true
+                    }
+                    val outputBuffer = decoder.getOutputBuffer(outputIndex)
+                    if (outputBuffer != null && bufferInfo.size > 0) {
+                        outputBuffer.position(bufferInfo.offset)
+                        outputBuffer.limit(bufferInfo.offset + bufferInfo.size)
+                        outputBuffer.order(ByteOrder.nativeOrder())
+
+                        // Check if output is float PCM
+                        val pcmEncoding = outputFormat?.let { fmt ->
+                            if (Build.VERSION.SDK_INT >= 24 && fmt.containsKey(MediaFormat.KEY_PCM_ENCODING)) {
+                                fmt.getInteger(MediaFormat.KEY_PCM_ENCODING)
+                            } else null
+                        }
+
+                        val shorts: ShortArray
+                        if (pcmEncoding == AudioFormat.ENCODING_PCM_FLOAT) {
+                            // Convert float PCM to 16-bit
+                            val floatCount = bufferInfo.size / 4
+                            shorts = ShortArray(floatCount)
+                            val floatBuffer = outputBuffer.asFloatBuffer()
+                            for (i in 0 until floatCount) {
+                                val f = floatBuffer.get()
+                                val clamped = max(-1f, min(1f, f))
+                                shorts[i] = (clamped * 32767f).toInt().toShort()
+                            }
+                        } else {
+                            // Standard 16-bit PCM
+                            val shortCount = bufferInfo.size / 2
+                            shorts = ShortArray(shortCount)
+                            outputBuffer.asShortBuffer().get(shorts)
+                        }
+                        pcmChunks.add(shorts)
+                    }
+                    decoder.releaseOutputBuffer(outputIndex, false)
                 }
-                decoder.releaseOutputBuffer(outputIndex, false)
             }
         }
+
+        // Read actual sample rate and channels from output format
+        val actualFormat = outputFormat ?: format
+        val sampleRate = actualFormat.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+        val channels = actualFormat.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
 
         decoder.stop()
         decoder.release()
@@ -156,7 +252,7 @@ actual class MixExporter(private val context: Context) {
             chunk.copyInto(result, pos)
             pos += chunk.size
         }
-        return result
+        return DecodedAudio(result, sampleRate, channels)
     }
 
     private fun encodePcmToM4a(
@@ -180,7 +276,7 @@ actual class MixExporter(private val context: Context) {
         var muxerStarted = false
 
         val bufferInfo = MediaCodec.BufferInfo()
-        val byteBuffer = ByteBuffer.allocate(pcm.size * 2)
+        val byteBuffer = ByteBuffer.allocate(pcm.size * 2).order(ByteOrder.nativeOrder())
         byteBuffer.asShortBuffer().put(pcm)
         byteBuffer.position(0)
         byteBuffer.limit(pcm.size * 2)
