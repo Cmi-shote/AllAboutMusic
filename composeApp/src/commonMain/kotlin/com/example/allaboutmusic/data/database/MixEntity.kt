@@ -9,13 +9,15 @@ import androidx.room.PrimaryKey
 data class MixEntity(
     @PrimaryKey val id: String,
     val name: String,
-    val createdAt: Long
+    val createdAt: Long,
+    val coverImagePath: String? = null
 )
 
 data class MixWithTrackCount(
     val id: String,
     val name: String,
     val createdAt: Long,
+    val coverImagePath: String?,
     val trackCount: Int
 )
 

@@ -27,6 +27,9 @@ interface MixDao {
     @Query("UPDATE mix SET name = :name WHERE id = :id")
     suspend fun renameMix(id: String, name: String)
 
+    @Query("UPDATE mix SET coverImagePath = :path WHERE id = :id")
+    suspend fun updateMixCoverImage(id: String, path: String?)
+
     // Mix tracks
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMixTrack(mixTrack: MixTrackEntity)

@@ -7,14 +7,16 @@ fun MixEntity.toDomain(trackCount: Int = 0) = Mix(
     id = id,
     name = name,
     createdAt = createdAt,
-    trackCount = trackCount
+    trackCount = trackCount,
+    coverImagePath = coverImagePath
 )
 
 fun MixWithTrackCount.toDomain() = Mix(
     id = id,
     name = name,
     createdAt = createdAt,
-    trackCount = trackCount
+    trackCount = trackCount,
+    coverImagePath = coverImagePath
 )
 
 fun MixTrackEntity.toDomain() = MixTrack(

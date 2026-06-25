@@ -33,16 +33,21 @@ class MixRepository(
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    suspend fun createMix(name: String): String {
+    suspend fun createMix(name: String, coverImagePath: String? = null): String {
         val id = Uuid.random().toString()
         mixDao.insertMix(
             MixEntity(
                 id = id,
                 name = name,
-                createdAt = currentTimeMillis()
+                createdAt = currentTimeMillis(),
+                coverImagePath = coverImagePath
             )
         )
         return id
+    }
+
+    suspend fun updateMixCoverImage(mixId: String, path: String?) {
+        mixDao.updateMixCoverImage(mixId, path)
     }
 
     suspend fun deleteMix(mixId: String) {

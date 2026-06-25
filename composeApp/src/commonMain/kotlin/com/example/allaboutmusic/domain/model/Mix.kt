@@ -4,7 +4,8 @@ data class Mix(
     val id: String,
     val name: String,
     val createdAt: Long,
-    val trackCount: Int = 0
+    val trackCount: Int = 0,
+    val coverImagePath: String? = null
 )
 
 data class MixTrack(
