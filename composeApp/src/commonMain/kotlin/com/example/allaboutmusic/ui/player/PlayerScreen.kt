@@ -22,7 +22,9 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,6 +58,7 @@ fun PlayerScreen(
     val state by viewModel.playerState.collectAsState()
     val position by viewModel.currentPosition.collectAsState()
     val isDownloading by viewModel.isDownloading.collectAsState()
+    val downloadError by viewModel.downloadError.collectAsState()
     val track = state.currentTrack
 
     if (track == null) {
@@ -251,5 +254,18 @@ fun PlayerScreen(
                 }
             }
         }
+    }
+
+    if (downloadError != null) {
+        AlertDialog(
+            onDismissRequest = { viewModel.clearDownloadError() },
+            confirmButton = {
+                TextButton(onClick = { viewModel.clearDownloadError() }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Storage Full") },
+            text = { Text(downloadError ?: "") }
+        )
     }
 }

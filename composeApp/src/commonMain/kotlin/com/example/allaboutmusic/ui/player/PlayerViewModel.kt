@@ -3,6 +3,7 @@ package com.example.allaboutmusic.ui.player
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.allaboutmusic.data.downloader.DownloadRepository
+import com.example.allaboutmusic.data.downloader.InsufficientStorageException
 import com.example.allaboutmusic.data.repository.MixRepository
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.domain.usecase.GetStreamUrlUseCase
@@ -25,6 +26,9 @@ class PlayerViewModel(
 
     private val _isDownloading = MutableStateFlow(false)
     val isDownloading: StateFlow<Boolean> = _isDownloading.asStateFlow()
+
+    private val _downloadError = MutableStateFlow<String?>(null)
+    val downloadError: StateFlow<String?> = _downloadError.asStateFlow()
 
     fun playTrack(track: Track) {
         viewModelScope.launch {
@@ -88,10 +92,16 @@ class PlayerViewModel(
             _isDownloading.value = true
             try {
                 downloadRepository.enqueueDownload(track)
+            } catch (e: InsufficientStorageException) {
+                _downloadError.value = e.message
             } finally {
                 _isDownloading.value = false
             }
         }
+    }
+
+    fun clearDownloadError() {
+        _downloadError.value = null
     }
 
     override fun onCleared() {
