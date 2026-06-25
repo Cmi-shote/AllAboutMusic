@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.automirrored.filled.QueueMusic
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -31,8 +30,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.allaboutmusic.ui.components.MiniPlayer
-import com.example.allaboutmusic.ui.downloads.DownloadsScreen
-import com.example.allaboutmusic.ui.downloads.DownloadsViewModel
 import com.example.allaboutmusic.ui.home.HomeScreen
 import com.example.allaboutmusic.ui.home.HomeViewModel
 import com.example.allaboutmusic.ui.library.LibraryScreen
@@ -48,7 +45,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable object HomeRoute
 @Serializable object LibraryRoute
-@Serializable object DownloadsRoute
 @Serializable object MixListRoute
 @Serializable data class MixDetailRoute(val mixId: String)
 @Serializable object PlayerRoute
@@ -62,8 +58,7 @@ data class BottomNavItem(
 val bottomNavItems = listOf(
     BottomNavItem("Home", HomeRoute, Icons.Filled.Home),
     BottomNavItem("Library", LibraryRoute, Icons.Filled.LibraryMusic),
-    BottomNavItem("Mixes", MixListRoute, Icons.AutoMirrored.Filled.QueueMusic),
-    BottomNavItem("Downloads", DownloadsRoute, Icons.Outlined.Download)
+    BottomNavItem("Mixes", MixListRoute, Icons.AutoMirrored.Filled.QueueMusic)
 )
 
 @Composable
@@ -73,7 +68,6 @@ fun AppNavigation(
     val navController = rememberNavController()
     val playerViewModel: PlayerViewModel = koinViewModel()
     val homeViewModel: HomeViewModel = koinViewModel()
-    val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val libraryViewModel: LibraryViewModel = koinViewModel()
     val mixListViewModel: MixListViewModel = koinViewModel()
     val mixDetailViewModel: MixDetailViewModel = koinViewModel()
@@ -110,7 +104,6 @@ fun AppNavigation(
                                 when (item.route) {
                                     is HomeRoute -> dest.hasRoute<HomeRoute>()
                                     is LibraryRoute -> dest.hasRoute<LibraryRoute>()
-                                    is DownloadsRoute -> dest.hasRoute<DownloadsRoute>()
                                     is MixListRoute -> dest.hasRoute<MixListRoute>()
                                     else -> false
                                 }
@@ -187,15 +180,6 @@ fun AppNavigation(
                         onBack = { navController.popBackStack() },
                         onPlayMix = { mixId ->
                             playerViewModel.playMix(mixId)
-                            navController.navigate(PlayerRoute)
-                        }
-                    )
-                }
-                composable<DownloadsRoute> {
-                    DownloadsScreen(
-                        viewModel = downloadsViewModel,
-                        onTrackClick = { track ->
-                            playerViewModel.playTrack(track)
                             navController.navigate(PlayerRoute)
                         }
                     )

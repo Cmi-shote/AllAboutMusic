@@ -14,7 +14,6 @@ import com.example.allaboutmusic.domain.usecase.GetFeaturedTracksUseCase
 import com.example.allaboutmusic.domain.usecase.GetStreamUrlUseCase
 import com.example.allaboutmusic.domain.usecase.GetTracksByGenreUseCase
 import com.example.allaboutmusic.domain.usecase.SearchTracksUseCase
-import com.example.allaboutmusic.ui.downloads.DownloadsViewModel
 import com.example.allaboutmusic.ui.home.HomeViewModel
 import com.example.allaboutmusic.ui.library.LibraryViewModel
 import com.example.allaboutmusic.ui.mix.MixDetailViewModel
@@ -54,8 +53,7 @@ val appModule = module {
     // ViewModels
     viewModel { PlayerViewModel(get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
-    viewModel { DownloadsViewModel(get()) }
-    viewModel { LibraryViewModel(get(), get()) }
+    viewModel { LibraryViewModel(get(), get(), get()) }
     viewModel { MixListViewModel(get()) }
     viewModel { MixDetailViewModel(get(), get(), get()) }
 }
