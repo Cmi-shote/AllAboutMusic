@@ -1,5 +1,6 @@
 package com.example.allaboutmusic.ui.mix
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,12 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -35,8 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.example.allaboutmusic.domain.model.Mix
+import com.example.allaboutmusic.ui.components.rememberImagePickerLauncher
 
 @Composable
 fun MixListScreen(
@@ -100,8 +110,42 @@ fun MixListScreen(
     if (state.showCreateDialog) {
         CreateMixDialog(
             onDismiss = { viewModel.dismissCreateDialog() },
-            onCreate = { name -> viewModel.createMix(name) }
+            onCreate = { name, coverPath -> viewModel.createMix(name, coverPath) }
         )
+    }
+}
+
+@Composable
+private fun MixCoverImage(
+    coverImagePath: String?,
+    size: Int,
+    modifier: Modifier = Modifier
+) {
+    val shape = RoundedCornerShape(8.dp)
+    if (coverImagePath != null) {
+        AsyncImage(
+            model = coverImagePath,
+            contentDescription = "Mix cover",
+            modifier = modifier
+                .size(size.dp)
+                .clip(shape),
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        Box(
+            modifier = modifier
+                .size(size.dp)
+                .clip(shape)
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.MusicNote,
+                contentDescription = "Default cover",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                modifier = Modifier.size((size / 2).dp)
+            )
+        }
     }
 }
 
@@ -118,9 +162,14 @@ private fun MixCard(
         colors = CardDefaults.cardColors()
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            MixCoverImage(
+                coverImagePath = mix.coverImagePath,
+                size = 48
+            )
+            Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = mix.name,
@@ -157,24 +206,92 @@ private fun MixCard(
 @Composable
 private fun CreateMixDialog(
     onDismiss: () -> Unit,
-    onCreate: (String) -> Unit
+    onCreate: (String, String?) -> Unit
 ) {
     var name by remember { mutableStateOf("") }
+    var coverImagePath by remember { mutableStateOf<String?>(null) }
+
+    val imagePicker = rememberImagePickerLauncher { path ->
+        if (path != null) coverImagePath = path
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("New Mix") },
         text = {
-            OutlinedTextField(
-                value = name,
-                onValueChange = { name = it },
-                label = { Text("Mix name") },
-                singleLine = true
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable { imagePicker.launch() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (coverImagePath != null) {
+                        AsyncImage(
+                            model = coverImagePath,
+                            contentDescription = "Mix cover",
+                            modifier = Modifier
+                                .size(80.dp)
+                                .clip(RoundedCornerShape(12.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Box(modifier = Modifier.size(88.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .align(Alignment.TopStart)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.AddPhotoAlternate,
+                                    contentDescription = "Add cover image",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(22.dp)
+                                    .align(Alignment.BottomEnd)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(MaterialTheme.colorScheme.primary),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Edit,
+                                    contentDescription = "Edit",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(13.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = "Add cover (optional)",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Mix name") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         },
         confirmButton = {
             TextButton(
-                onClick = { if (name.isNotBlank()) onCreate(name.trim()) },
+                onClick = { if (name.isNotBlank()) onCreate(name.trim(), coverImagePath) },
                 enabled = name.isNotBlank()
             ) {
                 Text("Create")

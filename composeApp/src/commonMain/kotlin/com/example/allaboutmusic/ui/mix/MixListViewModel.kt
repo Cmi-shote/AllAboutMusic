@@ -41,9 +41,9 @@ class MixListViewModel(
         _uiState.value = _uiState.value.copy(showCreateDialog = false)
     }
 
-    fun createMix(name: String) {
+    fun createMix(name: String, coverImagePath: String? = null) {
         viewModelScope.launch {
-            mixRepository.createMix(name)
+            mixRepository.createMix(name, coverImagePath)
             _uiState.value = _uiState.value.copy(showCreateDialog = false)
         }
     }
