@@ -23,9 +23,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.IosShare
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -67,6 +70,7 @@ import coil3.compose.AsyncImage
 import com.example.allaboutmusic.domain.model.MixTrack
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.ui.components.formatDuration
+import com.example.allaboutmusic.ui.components.rememberImagePickerLauncher
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +87,10 @@ fun MixDetailScreen(
     }
 
     val state by viewModel.uiState.collectAsState()
+
+    val coverImagePicker = rememberImagePickerLauncher { path ->
+        if (path != null) viewModel.updateMixCoverImage(path)
+    }
 
     var showExportDialog by remember { mutableStateOf(false) }
     var showBackWarning by remember { mutableStateOf(false) }
@@ -108,6 +116,60 @@ fun MixDetailScreen(
                         contentDescription = "Back"
                     )
                 }
+                // Tappable cover image
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { coverImagePicker.launch() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    val coverPath = state.mix?.coverImagePath
+                    if (coverPath != null) {
+                        AsyncImage(
+                            model = coverPath,
+                            contentDescription = "Mix cover",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Box(modifier = Modifier.size(46.dp)) {
+                            Box(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .align(Alignment.TopStart)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.MusicNote,
+                                    contentDescription = "Default cover",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .size(16.dp)
+                                    .align(Alignment.BottomEnd)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(MaterialTheme.colorScheme.primary),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Edit,
+                                    contentDescription = "Edit cover",
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.size(10.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(Modifier.width(8.dp))
                 Text(
                     text = state.mix?.name ?: "Mix",
                     style = MaterialTheme.typography.headlineMedium,

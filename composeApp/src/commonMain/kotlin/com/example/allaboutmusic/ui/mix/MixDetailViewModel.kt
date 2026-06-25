@@ -176,6 +176,15 @@ class MixDetailViewModel(
         _uiState.value = _uiState.value.copy(exportResult = null)
     }
 
+    fun updateMixCoverImage(path: String?) {
+        val mixId = currentMixId ?: return
+        viewModelScope.launch {
+            mixRepository.updateMixCoverImage(mixId, path)
+            val mix = mixRepository.getMix(mixId)
+            _uiState.value = _uiState.value.copy(mix = mix)
+        }
+    }
+
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
