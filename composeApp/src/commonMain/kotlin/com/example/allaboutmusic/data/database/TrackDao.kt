@@ -18,10 +18,10 @@ interface TrackDao {
     @Query("SELECT * FROM track WHERE id = :id")
     suspend fun getTrackById(id: String): TrackEntity?
 
-    @Query("SELECT * FROM track WHERE localPath IS NOT NULL ORDER BY downloadedAt DESC")
+    @Query("SELECT * FROM track WHERE localPath IS NOT NULL AND source != 'local' ORDER BY downloadedAt DESC")
     fun getDownloadedTracks(): Flow<List<TrackEntity>>
 
-    @Query("SELECT * FROM track WHERE localPath IS NOT NULL ORDER BY downloadedAt DESC")
+    @Query("SELECT * FROM track WHERE localPath IS NOT NULL AND source != 'local' ORDER BY downloadedAt DESC")
     suspend fun getDownloadedTracksList(): List<TrackEntity>
 
     @Query("UPDATE track SET localPath = :localPath, downloadedAt = :downloadedAt WHERE id = :id")
