@@ -8,6 +8,7 @@ import com.example.allaboutmusic.data.repository.TrackRepository
 import com.example.allaboutmusic.domain.model.Mix
 import com.example.allaboutmusic.domain.model.MixTrack
 import com.example.allaboutmusic.domain.model.Track
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,6 +36,7 @@ class MixDetailViewModel(
     val uiState: StateFlow<MixDetailUiState> = _uiState.asStateFlow()
 
     private var currentMixId: String? = null
+    private var exportJob: Job? = null
 
     fun loadMix(mixId: String) {
         if (currentMixId == mixId) return
@@ -136,7 +138,7 @@ class MixDetailViewModel(
             return
         }
 
-        viewModelScope.launch {
+        exportJob = viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isExporting = true, exportProgress = 0f)
             val result = mixExporter.exportMix(
                 mixName = mix.name,
@@ -152,12 +154,22 @@ class MixDetailViewModel(
                     exportProgress = 1f
                 )
             }.onFailure { e ->
-                _uiState.value = _uiState.value.copy(
-                    isExporting = false,
-                    error = "Export failed: ${e.message}"
-                )
+                if (e is kotlinx.coroutines.CancellationException) {
+                    _uiState.value = _uiState.value.copy(isExporting = false, exportProgress = 0f)
+                } else {
+                    _uiState.value = _uiState.value.copy(
+                        isExporting = false,
+                        error = "Export failed: ${e.message}"
+                    )
+                }
             }
         }
+    }
+
+    fun cancelExport() {
+        exportJob?.cancel()
+        exportJob = null
+        _uiState.value = _uiState.value.copy(isExporting = false, exportProgress = 0f)
     }
 
     fun clearExportResult() {
