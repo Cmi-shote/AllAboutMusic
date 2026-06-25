@@ -100,17 +100,19 @@ actual class MusicPlayer(context: Context) {
         })
     }
 
+    private val localDataSourceFactory = DefaultDataSource.Factory(context)
+
     actual fun playTrack(track: Track, streamUrl: String) {
         currentMixTracks = emptyList()
 
-        val uri = if (track.localPath != null) {
-            "file://${track.localPath}"
+        val mediaSource = if (track.localPath != null) {
+            // Local files: use direct data source, no cache
+            ProgressiveMediaSource.Factory(localDataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(Uri.fromFile(File(track.localPath!!))))
         } else {
-            streamUrl
+            ProgressiveMediaSource.Factory(cacheDataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(streamUrl))
         }
-
-        val mediaSource = ProgressiveMediaSource.Factory(cacheDataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(uri))
 
         exoPlayer.setMediaSource(mediaSource)
         exoPlayer.prepare()
@@ -136,7 +138,8 @@ actual class MusicPlayer(context: Context) {
                 return // Mix playback requires downloaded tracks
             }
 
-            val original = ProgressiveMediaSource.Factory(cacheDataSourceFactory)
+            // Local files: use direct data source, no cache
+            val original = ProgressiveMediaSource.Factory(localDataSourceFactory)
                 .createMediaSource(MediaItem.fromUri(uri))
 
             // ClippingMediaSource takes microseconds
