@@ -46,6 +46,9 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.unit.dp
 import com.example.allaboutmusic.domain.model.Track
 import com.example.allaboutmusic.ui.components.TrackCard
@@ -104,7 +107,7 @@ fun HomeScreen(
         }
     }
 
-    Column(modifier = modifier.fillMaxSize().nestedScroll(nestedScrollConnection)) {
+    Column(modifier = modifier.fillMaxSize().nestedScroll(nestedScrollConnection).windowInsetsPadding(WindowInsets.ime)) {
         Spacer(Modifier.height(8.dp))
 
         // Animated search bar
