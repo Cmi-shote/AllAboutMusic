@@ -22,7 +22,7 @@ import platform.darwin.NSObject
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, ExperimentalForeignApi::class)
 @Composable
 actual fun rememberImagePickerLauncher(
     onImagePicked: (String?) -> Unit

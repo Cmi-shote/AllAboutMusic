@@ -2,29 +2,28 @@ package com.example.allaboutmusic.data.export
 
 import com.example.allaboutmusic.domain.model.MixTrack
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import platform.AVFAudio.AVAudioSession
-import platform.AVFAudio.AVAudioSessionCategoryPlayback
 import platform.AVFoundation.AVAssetExportPresetAppleM4A
 import platform.AVFoundation.AVAssetExportSession
 import platform.AVFoundation.AVAssetExportSessionStatusCompleted
 import platform.AVFoundation.AVAssetExportSessionStatusFailed
+import platform.AVFoundation.AVAssetTrack
 import platform.AVFoundation.AVFileTypeAppleM4A
+import platform.AVFoundation.AVMediaTypeAudio
 import platform.AVFoundation.AVMutableComposition
-import platform.AVFoundation.AVMutableCompositionTrack
 import platform.AVFoundation.AVURLAsset
 import platform.AVFoundation.addMutableTrackWithMediaType
 import platform.AVFoundation.insertTimeRange
+import platform.AVFoundation.loadTracksWithMediaType
 import platform.CoreMedia.CMTimeMake
 import platform.CoreMedia.CMTimeRangeMake
-import platform.CoreMedia.kCMTimeZero
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-import platform.AVFoundation.AVMediaTypeAudio
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -43,7 +42,7 @@ actual class MixExporter {
                 preferredTrackID = 0
             ) ?: return@withContext Result.failure(Exception("Failed to create composition track"))
 
-            var insertTime = kCMTimeZero
+            var insertTimeMs = 0L
             val totalTracks = mixTracks.size
 
             for ((index, mixTrack) in mixTracks.withIndex()) {
@@ -53,37 +52,32 @@ actual class MixExporter {
                 val url = NSURL.fileURLWithPath(localPath)
                 val asset = AVURLAsset(uRL = url, options = null)
 
-                val assetTracks = asset.tracksWithMediaType(AVMediaTypeAudio)
-                val assetAudioTrack = assetTracks.firstOrNull()
+                // Load audio tracks asynchronously (modern API)
+                val audioTracks = loadAudioTracks(asset)
+                val assetAudioTrack = audioTracks.firstOrNull()
                     ?: return@withContext Result.failure(Exception("No audio track in '${mixTrack.title}'"))
 
                 // Calculate cue points
                 val cueInTime = CMTimeMake(value = mixTrack.cueInMs, timescale = 1000)
-                val duration = if (mixTrack.cueOutMs != null) {
-                    CMTimeMake(value = mixTrack.cueOutMs - mixTrack.cueInMs, timescale = 1000)
+                val durationMs = if (mixTrack.cueOutMs != null) {
+                    mixTrack.cueOutMs - mixTrack.cueInMs
                 } else {
-                    // Duration from cueIn to end of asset
-                    val assetDuration = asset.duration
-                    CMTimeMake(
-                        value = (assetDuration.value * 1000 / assetDuration.timescale) - mixTrack.cueInMs,
-                        timescale = 1000
-                    )
+                    val assetDurationMs = asset.duration.useContents { value * 1000 / timescale }
+                    assetDurationMs - mixTrack.cueInMs
                 }
+                val duration = CMTimeMake(value = durationMs, timescale = 1000)
 
                 val timeRange = CMTimeRangeMake(start = cueInTime, duration = duration)
+                val insertTime = CMTimeMake(value = insertTimeMs, timescale = 1000)
 
-                @Suppress("UNCHECKED_CAST")
                 compositionTrack.insertTimeRange(
                     timeRange = timeRange,
-                    ofTrack = assetAudioTrack as platform.AVFoundation.AVAssetTrack,
+                    ofTrack = assetAudioTrack,
                     atTime = insertTime,
                     error = null
                 )
 
-                insertTime = CMTimeMake(
-                    value = insertTime.value * 1000 / insertTime.timescale + duration.value * 1000 / duration.timescale,
-                    timescale = 1000
-                )
+                insertTimeMs += durationMs
 
                 onProgress((index + 1).toFloat() / (totalTracks + 1))
             }
@@ -125,6 +119,16 @@ actual class MixExporter {
             result
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    private suspend fun loadAudioTracks(asset: AVURLAsset): List<AVAssetTrack> {
+        return suspendCoroutine { continuation ->
+            asset.loadTracksWithMediaType(AVMediaTypeAudio) { tracks: List<*>?, error: platform.Foundation.NSError? ->
+                val result = tracks?.filterIsInstance<AVAssetTrack>() ?: emptyList()
+                continuation.resume(result)
+            }
         }
     }
 }

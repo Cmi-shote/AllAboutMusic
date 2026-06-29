@@ -14,6 +14,7 @@ actual fun deleteFile(path: String): Boolean {
     return NSFileManager.defaultManager.removeItemAtPath(path, null)
 }
 
+@OptIn(ExperimentalForeignApi::class)
 actual fun getDeviceFreeSpaceBytes(): Long {
     val attrs = NSFileManager.defaultManager.attributesOfFileSystemForPath(NSHomeDirectory(), null)
     val freeSize = attrs?.get(NSFileSystemFreeSize) as? Long

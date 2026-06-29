@@ -240,7 +240,7 @@ fun MixDetailScreen(
                 LazyColumn(
                     state = listState,
                     verticalArrangement = Arrangement.spacedBy(4.dp),
-                    modifier = Modifier.padding(horizontal = 8.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 ) {
                     itemsIndexed(state.tracks, key = { _, t -> t.id }) { index, mixTrack ->
                         val isDragged = draggedIndex == index
