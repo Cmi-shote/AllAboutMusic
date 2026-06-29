@@ -1,35 +1,78 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# AllAboutMusic
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Cross-platform music streaming and download app built with **Kotlin Multiplatform + Compose Multiplatform**. Browse, stream, and download Creative Commons music from [Jamendo](https://www.jamendo.com), then build cue-pointed mixes for seamless playback.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+**Platforms:** Android (primary), iOS (secondary)
 
-### Build and Run Android Application
+## Features
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+- Search and stream 320kbps MP3 tracks from Jamendo
+- Browse featured tracks and filter by genre
+- Download tracks for offline playback
+- Build mixes with drag-reorder and cue-in/cue-out points
+- Waveform scrubber for downloaded tracks
+- Mini-player with full-screen expansion
+- Background playback with media controls
 
-### Build and Run iOS Application
+## Tech Stack
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+| Layer | Technology |
+|---|---|
+| UI | Compose Multiplatform |
+| Networking | Ktor + kotlinx.serialization |
+| Database | Room (KMP) |
+| Player (Android) | Media3 / ExoPlayer |
+| Player (iOS) | AVPlayer / AVQueuePlayer |
+| DI | Koin |
+| Downloads (Android) | WorkManager |
+| Downloads (iOS) | URLSession |
+| Images | Coil 3 |
 
----
+## Project Structure
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Single `composeApp` module with package-level separation:
+
+```
+com.example.allaboutmusic/
+  data/api/          — Ktor client, Jamendo API, DTOs
+  data/database/     — Room entities, DAOs, database class
+  data/downloader/   — Download queue, progress tracking
+  data/repository/   — Repositories bridging API + DB
+  domain/model/      — Track, Mix, MixTrack, DownloadStatus
+  domain/usecase/    — SearchTracks, GetStreamUrl, ManageMix, etc.
+  player/            — expect/actual MusicPlayer
+  ui/home/           — Home screen (featured + genre chips)
+  ui/search/         — Search results
+  ui/player/         — Full player + mini-player
+  ui/library/        — Downloaded tracks + mixes list
+  ui/mix/            — Mix arranger + cue-point editor
+  ui/downloads/      — Download queue screen
+  di/                — Koin modules
+```
+
+## Setup
+
+1. Register at [developer.jamendo.com](https://developer.jamendo.com) to get a client ID
+2. Add your client ID to the project configuration
+3. Build and run:
+
+```shell
+# Android
+./gradlew :composeApp:assembleDebug
+
+# Run shared tests
+./gradlew test
+
+# Instrumented tests
+./gradlew :composeApp:connectedAndroidTest
+```
+
+For iOS, open the `iosApp` directory in Xcode and run from there.
+
+## Music Source
+
+All music is sourced from the [Jamendo API](https://developer.jamendo.com) — Creative Commons licensed tracks. Attribution is displayed on every track: **"Artist — via Jamendo (CC BY)"**.
+
+## License
+
+All streamed and downloaded music is subject to Jamendo's Creative Commons licensing terms.
