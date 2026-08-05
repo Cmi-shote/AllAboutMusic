@@ -7,7 +7,8 @@ import androidx.room.RoomDatabaseConstructor
 
 @Database(
     entities = [TrackEntity::class, DownloadQueueEntity::class, MixEntity::class, MixTrackEntity::class],
-    version = 4
+    version = 1,
+    exportSchema = false
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
