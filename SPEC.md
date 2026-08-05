@@ -21,7 +21,7 @@ Cross-platform music streaming and download app built with Kotlin Multiplatform 
 
 ### Package Structure (single module: `composeApp`)
 ```
-com.example.allaboutmusic/
+com.simiscompany.allaboutmusic/
   data/
     api/              Ktor HTTP client, Jamendo API service, response DTOs
     database/         Room entities, DAOs, database class, migrations

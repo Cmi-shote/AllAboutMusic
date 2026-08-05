@@ -33,7 +33,7 @@ Cross-platform music streaming and download app built with **Kotlin Multiplatfor
 Single `composeApp` module with package-level separation:
 
 ```
-com.example.allaboutmusic/
+com.simiscompany.allaboutmusic/
   data/api/          — Ktor client, Jamendo API, DTOs
   data/database/     — Room entities, DAOs, database class
   data/downloader/   — Download queue, progress tracking

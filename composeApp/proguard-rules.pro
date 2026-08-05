@@ -8,11 +8,11 @@
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
--keep,includedescriptorclasses class com.example.allaboutmusic.**$$serializer { *; }
--keepclassmembers class com.example.allaboutmusic.** {
+-keep,includedescriptorclasses class com.simiscompany.allaboutmusic.**$$serializer { *; }
+-keepclassmembers class com.simiscompany.allaboutmusic.** {
     *** Companion;
 }
--keepclasseswithmembers class com.example.allaboutmusic.** {
+-keepclasseswithmembers class com.simiscompany.allaboutmusic.** {
     kotlinx.serialization.KSerializer serializer(...);
 }
 
@@ -44,10 +44,10 @@
 -dontwarn kotlinx.coroutines.**
 
 # Keep Jamendo API DTOs (used with kotlinx.serialization)
--keep class com.example.allaboutmusic.data.api.** { *; }
+-keep class com.simiscompany.allaboutmusic.data.api.** { *; }
 
 # Keep domain models
--keep class com.example.allaboutmusic.domain.model.** { *; }
+-keep class com.simiscompany.allaboutmusic.domain.model.** { *; }
 
 # Keep Room entities and DAOs
--keep class com.example.allaboutmusic.data.database.** { *; }
+-keep class com.simiscompany.allaboutmusic.data.database.** { *; }
