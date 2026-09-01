@@ -30,6 +30,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.simiscompany.allaboutmusic.domain.model.DownloadItem
 import com.simiscompany.allaboutmusic.domain.model.Track
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.cd_download
+import com.simiscompany.allaboutmusic.resources.cd_downloaded
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TrackCard(
@@ -108,7 +112,7 @@ private fun DownloadButton(
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
                     Icon(
                         imageVector = Icons.Filled.CheckCircle,
-                        contentDescription = "Downloaded",
+                        contentDescription = stringResource(Res.string.cd_downloaded),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                     )
@@ -139,7 +143,7 @@ private fun DownloadButton(
                 IconButton(onClick = onClick) {
                     Icon(
                         imageVector = Icons.Outlined.Download,
-                        contentDescription = "Download",
+                        contentDescription = stringResource(Res.string.cd_download),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

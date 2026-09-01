@@ -30,6 +30,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.simiscompany.allaboutmusic.player.PlayerState
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.cd_pause
+import com.simiscompany.allaboutmusic.resources.cd_play
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MiniPlayer(
@@ -96,7 +100,9 @@ fun MiniPlayer(
                     ) { isPlaying ->
                         Icon(
                             imageVector = if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            contentDescription = stringResource(
+                                if (isPlaying) Res.string.cd_pause else Res.string.cd_play
+                            ),
                             modifier = Modifier.size(28.dp)
                         )
                     }
