@@ -8,11 +8,17 @@ import com.simiscompany.allaboutmusic.data.repository.TrackRepository
 import com.simiscompany.allaboutmusic.domain.model.Mix
 import com.simiscompany.allaboutmusic.domain.model.MixTrack
 import com.simiscompany.allaboutmusic.domain.model.Track
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.error_export_failed
+import com.simiscompany.allaboutmusic.resources.error_max_tracks_per_mix
+import com.simiscompany.allaboutmusic.resources.error_no_tracks_to_export
+import com.simiscompany.allaboutmusic.resources.error_tracks_not_downloaded
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 data class MixDetailUiState(
     val mix: Mix? = null,
@@ -76,7 +82,9 @@ class MixDetailViewModel(
         viewModelScope.launch {
             val added = mixRepository.addTrackToMix(mixId, track)
             if (!added) {
-                _uiState.value = _uiState.value.copy(error = "Max 50 tracks per mix")
+                _uiState.value = _uiState.value.copy(
+                    error = getString(Res.string.error_max_tracks_per_mix)
+                )
             }
             // Refresh mix metadata (track count)
             val mix = mixRepository.getMix(mixId)
@@ -127,14 +135,23 @@ class MixDetailViewModel(
         val mix = _uiState.value.mix ?: return
         val tracks = _uiState.value.tracks
         if (tracks.isEmpty()) {
-            _uiState.value = _uiState.value.copy(error = "No tracks to export")
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(
+                    error = getString(Res.string.error_no_tracks_to_export)
+                )
+            }
             return
         }
         val missingLocal = tracks.filter { it.localPath == null }
         if (missingLocal.isNotEmpty()) {
-            _uiState.value = _uiState.value.copy(
-                error = "Some tracks are not downloaded: ${missingLocal.joinToString { it.title }}"
-            )
+            viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(
+                    error = getString(
+                        Res.string.error_tracks_not_downloaded,
+                        missingLocal.joinToString { it.title }
+                    )
+                )
+            }
             return
         }
 
@@ -159,7 +176,7 @@ class MixDetailViewModel(
                 } else {
                     _uiState.value = _uiState.value.copy(
                         isExporting = false,
-                        error = "Export failed: ${e.message}"
+                        error = getString(Res.string.error_export_failed, e.message.orEmpty())
                     )
                 }
             }

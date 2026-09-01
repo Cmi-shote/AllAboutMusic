@@ -72,8 +72,42 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import com.simiscompany.allaboutmusic.domain.model.MixTrack
 import com.simiscompany.allaboutmusic.domain.model.Track
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.action_ok
+import com.simiscompany.allaboutmusic.resources.add_track_empty
+import com.simiscompany.allaboutmusic.resources.add_track_title
+import com.simiscompany.allaboutmusic.resources.cd_add_track
+import com.simiscompany.allaboutmusic.resources.cd_back
+import com.simiscompany.allaboutmusic.resources.cd_default_cover
+import com.simiscompany.allaboutmusic.resources.cd_edit_cover
+import com.simiscompany.allaboutmusic.resources.cd_export_mix
+import com.simiscompany.allaboutmusic.resources.cd_mix_cover
+import com.simiscompany.allaboutmusic.resources.cd_play_mix
+import com.simiscompany.allaboutmusic.resources.cd_reorder
+import com.simiscompany.allaboutmusic.resources.cue_end
+import com.simiscompany.allaboutmusic.resources.cue_in
+import com.simiscompany.allaboutmusic.resources.cue_out
+import com.simiscompany.allaboutmusic.resources.cue_play_to_end
+import com.simiscompany.allaboutmusic.resources.cue_set_cue_out
+import com.simiscompany.allaboutmusic.resources.cue_summary
+import com.simiscompany.allaboutmusic.resources.dialog_error_title
+import com.simiscompany.allaboutmusic.resources.download_percent
+import com.simiscompany.allaboutmusic.resources.export_background
+import com.simiscompany.allaboutmusic.resources.export_cancel
+import com.simiscompany.allaboutmusic.resources.export_complete_title
+import com.simiscompany.allaboutmusic.resources.export_dismiss_hint
+import com.simiscompany.allaboutmusic.resources.export_in_progress_message
+import com.simiscompany.allaboutmusic.resources.export_in_progress_title
+import com.simiscompany.allaboutmusic.resources.export_leave_and_cancel
+import com.simiscompany.allaboutmusic.resources.export_saved_to
+import com.simiscompany.allaboutmusic.resources.export_stay
+import com.simiscompany.allaboutmusic.resources.export_title
+import com.simiscompany.allaboutmusic.resources.mix_default_name
+import com.simiscompany.allaboutmusic.resources.mix_detail_empty
+import com.simiscompany.allaboutmusic.resources.mix_remove_track
 import com.simiscompany.allaboutmusic.ui.components.formatDuration
 import com.simiscompany.allaboutmusic.ui.components.rememberImagePickerLauncher
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,7 +151,7 @@ fun MixDetailScreen(
                 }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = stringResource(Res.string.cd_back)
                     )
                 }
                 // Tappable cover image
@@ -130,7 +164,7 @@ fun MixDetailScreen(
                     if (coverPath != null) {
                         AsyncImage(
                             model = coverPath,
-                            contentDescription = "Mix cover",
+                            contentDescription = stringResource(Res.string.cd_mix_cover),
                             modifier = Modifier
                                 .size(40.dp)
                                 .align(Alignment.TopStart)
@@ -148,7 +182,7 @@ fun MixDetailScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.MusicNote,
-                                contentDescription = "Default cover",
+                                contentDescription = stringResource(Res.string.cd_default_cover),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                 modifier = Modifier.size(20.dp)
                             )
@@ -164,7 +198,7 @@ fun MixDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
-                            contentDescription = "Edit cover",
+                            contentDescription = stringResource(Res.string.cd_edit_cover),
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(10.dp)
                         )
@@ -172,7 +206,7 @@ fun MixDetailScreen(
                 }
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = state.mix?.name ?: "Mix",
+                    text = state.mix?.name ?: stringResource(Res.string.mix_default_name),
                     style = MaterialTheme.typography.headlineMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -192,14 +226,14 @@ fun MixDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.IosShare,
-                            contentDescription = "Export mix",
+                            contentDescription = stringResource(Res.string.cd_export_mix),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     IconButton(onClick = { onPlayMix(mixId) }) {
                         Icon(
                             imageVector = Icons.Filled.PlayArrow,
-                            contentDescription = "Play mix",
+                            contentDescription = stringResource(Res.string.cd_play_mix),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -210,7 +244,7 @@ fun MixDetailScreen(
             FloatingActionButton(onClick = { viewModel.showAddTrackSheet() }) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = "Add track"
+                    contentDescription = stringResource(Res.string.cd_add_track)
                 )
             }
         },
@@ -227,7 +261,7 @@ fun MixDetailScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No tracks in this mix.\nTap + to add downloaded tracks.",
+                        text = stringResource(Res.string.mix_detail_empty),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -320,15 +354,18 @@ fun MixDetailScreen(
             onDismissRequest = { showExportDialog = false },
             confirmButton = {
                 TextButton(onClick = { viewModel.cancelExport() }) {
-                    Text("Cancel Export", color = MaterialTheme.colorScheme.error)
+                    Text(
+                        stringResource(Res.string.export_cancel),
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showExportDialog = false }) {
-                    Text("Background")
+                    Text(stringResource(Res.string.export_background))
                 }
             },
-            title = { Text("Exporting Mix") },
+            title = { Text(stringResource(Res.string.export_title)) },
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     LinearProgressIndicator(
@@ -336,10 +373,15 @@ fun MixDetailScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(Modifier.height(8.dp))
-                    Text("${(state.exportProgress * 100).toInt()}%")
+                    Text(
+                        stringResource(
+                            Res.string.download_percent,
+                            (state.exportProgress * 100).toInt()
+                        )
+                    )
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        text = "Tap Background to dismiss this dialog.\nExport will continue.",
+                        text = stringResource(Res.string.export_dismiss_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -358,16 +400,19 @@ fun MixDetailScreen(
                     viewModel.cancelExport()
                     onBack()
                 }) {
-                    Text("Leave & Cancel", color = MaterialTheme.colorScheme.error)
+                    Text(
+                        stringResource(Res.string.export_leave_and_cancel),
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showBackWarning = false }) {
-                    Text("Stay")
+                    Text(stringResource(Res.string.export_stay))
                 }
             },
-            title = { Text("Export in Progress") },
-            text = { Text("Leaving this screen will cancel the current export. Are you sure?") }
+            title = { Text(stringResource(Res.string.export_in_progress_title)) },
+            text = { Text(stringResource(Res.string.export_in_progress_message)) }
         )
     }
 
@@ -377,11 +422,13 @@ fun MixDetailScreen(
             onDismissRequest = { viewModel.clearExportResult() },
             confirmButton = {
                 TextButton(onClick = { viewModel.clearExportResult() }) {
-                    Text("OK")
+                    Text(stringResource(Res.string.action_ok))
                 }
             },
-            title = { Text("Export Complete") },
-            text = { Text("Saved to: ${state.exportResult}") }
+            title = { Text(stringResource(Res.string.export_complete_title)) },
+            text = {
+                Text(stringResource(Res.string.export_saved_to, state.exportResult.orEmpty()))
+            }
         )
     }
 
@@ -391,10 +438,10 @@ fun MixDetailScreen(
             onDismissRequest = { viewModel.clearError() },
             confirmButton = {
                 TextButton(onClick = { viewModel.clearError() }) {
-                    Text("OK")
+                    Text(stringResource(Res.string.action_ok))
                 }
             },
-            title = { Text("Error") },
+            title = { Text(stringResource(Res.string.dialog_error_title)) },
             text = { Text(state.error ?: "") }
         )
     }
@@ -427,7 +474,7 @@ private fun MixTrackCard(
                 // Drag handle
                 Icon(
                     imageVector = Icons.Filled.DragHandle,
-                    contentDescription = "Reorder",
+                    contentDescription = stringResource(Res.string.cd_reorder),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .size(24.dp)
@@ -482,9 +529,10 @@ private fun MixTrackCard(
 
             // Cue point info summary
             val cueInText = formatDuration(mixTrack.cueInMs)
-            val cueOutText = mixTrack.cueOutMs?.let { formatDuration(it) } ?: "end"
+            val cueOutText = mixTrack.cueOutMs?.let { formatDuration(it) }
+                ?: stringResource(Res.string.cue_end)
             Text(
-                text = "Cue: $cueInText - $cueOutText",
+                text = stringResource(Res.string.cue_summary, cueInText, cueOutText),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 32.dp, top = 4.dp)
@@ -519,7 +567,10 @@ private fun CuePointEditor(
     var useFullEnd by remember(mixTrack.id) { mutableStateOf(mixTrack.cueOutMs == null) }
 
     Column(modifier = Modifier.padding(start = 32.dp)) {
-        Text("Cue In: ${formatDuration(cueIn.toLong())}", style = MaterialTheme.typography.labelMedium)
+        Text(
+            stringResource(Res.string.cue_in, formatDuration(cueIn.toLong())),
+            style = MaterialTheme.typography.labelMedium
+        )
         Slider(
             value = cueIn,
             onValueChange = { cueIn = it },
@@ -535,7 +586,11 @@ private fun CuePointEditor(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "Cue Out: ${if (useFullEnd) "end" else formatDuration(cueOut.toLong())}",
+                stringResource(
+                    Res.string.cue_out,
+                    if (useFullEnd) stringResource(Res.string.cue_end)
+                    else formatDuration(cueOut.toLong())
+                ),
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.weight(1f)
             )
@@ -548,7 +603,12 @@ private fun CuePointEditor(
                     onCuePointsChanged(cueIn.toLong(), durationMs.toLong())
                 }
             }) {
-                Text(if (useFullEnd) "Set cue-out" else "Play to end")
+                Text(
+                    stringResource(
+                        if (useFullEnd) Res.string.cue_set_cue_out
+                        else Res.string.cue_play_to_end
+                    )
+                )
             }
         }
 
@@ -566,7 +626,10 @@ private fun CuePointEditor(
 
         Spacer(Modifier.height(8.dp))
         TextButton(onClick = onRemove) {
-            Text("Remove from mix", color = MaterialTheme.colorScheme.error)
+            Text(
+                stringResource(Res.string.mix_remove_track),
+                color = MaterialTheme.colorScheme.error
+            )
         }
     }
 }
@@ -577,12 +640,15 @@ private fun AddTrackSheet(
     onTrackSelected: (Track) -> Unit
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Add Track", style = MaterialTheme.typography.titleLarge)
+        Text(
+            stringResource(Res.string.add_track_title),
+            style = MaterialTheme.typography.titleLarge
+        )
         Spacer(Modifier.height(8.dp))
 
         if (tracks.isEmpty()) {
             Text(
-                text = "No downloaded tracks available.\nDownload songs first to add them to a mix.",
+                text = stringResource(Res.string.add_track_empty),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

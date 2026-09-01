@@ -46,7 +46,25 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.simiscompany.allaboutmusic.domain.model.Mix
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.action_cancel
+import com.simiscompany.allaboutmusic.resources.action_create
+import com.simiscompany.allaboutmusic.resources.cd_add_cover_image
+import com.simiscompany.allaboutmusic.resources.cd_create_mix
+import com.simiscompany.allaboutmusic.resources.cd_default_cover
+import com.simiscompany.allaboutmusic.resources.cd_delete_mix
+import com.simiscompany.allaboutmusic.resources.cd_edit
+import com.simiscompany.allaboutmusic.resources.cd_mix_cover
+import com.simiscompany.allaboutmusic.resources.cd_play_mix
+import com.simiscompany.allaboutmusic.resources.dialog_new_mix_title
+import com.simiscompany.allaboutmusic.resources.mix_add_cover_optional
+import com.simiscompany.allaboutmusic.resources.mix_name_label
+import com.simiscompany.allaboutmusic.resources.mix_track_count
+import com.simiscompany.allaboutmusic.resources.mixes_empty
+import com.simiscompany.allaboutmusic.resources.mixes_title
 import com.simiscompany.allaboutmusic.ui.components.rememberImagePickerLauncher
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MixListScreen(
@@ -64,7 +82,10 @@ fun MixListScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Spacer(Modifier.height(8.dp))
-            Text("Mixes", style = MaterialTheme.typography.headlineMedium)
+            Text(
+                stringResource(Res.string.mixes_title),
+                style = MaterialTheme.typography.headlineMedium
+            )
             Spacer(Modifier.height(8.dp))
 
             if (state.mixes.isEmpty()) {
@@ -73,7 +94,7 @@ fun MixListScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No mixes yet.\nTap + to create one.",
+                        text = stringResource(Res.string.mixes_empty),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -102,7 +123,7 @@ fun MixListScreen(
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Create mix"
+                contentDescription = stringResource(Res.string.cd_create_mix)
             )
         }
     }
@@ -125,7 +146,7 @@ private fun MixCoverImage(
     if (coverImagePath != null) {
         AsyncImage(
             model = coverImagePath,
-            contentDescription = "Mix cover",
+            contentDescription = stringResource(Res.string.cd_mix_cover),
             modifier = modifier
                 .size(size.dp)
                 .clip(shape),
@@ -141,7 +162,7 @@ private fun MixCoverImage(
         ) {
             Icon(
                 imageVector = Icons.Filled.MusicNote,
-                contentDescription = "Default cover",
+                contentDescription = stringResource(Res.string.cd_default_cover),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 modifier = Modifier.size((size / 2).dp)
             )
@@ -176,7 +197,11 @@ private fun MixCard(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "${mix.trackCount} track${if (mix.trackCount != 1) "s" else ""}",
+                    text = pluralStringResource(
+                        Res.plurals.mix_track_count,
+                        mix.trackCount,
+                        mix.trackCount
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -188,14 +213,14 @@ private fun MixCard(
             ) {
                 Icon(
                     imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = "Play mix",
+                    contentDescription = stringResource(Res.string.cd_play_mix),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
-                    contentDescription = "Delete mix",
+                    contentDescription = stringResource(Res.string.cd_delete_mix),
                     tint = MaterialTheme.colorScheme.error
                 )
             }
@@ -217,7 +242,7 @@ private fun CreateMixDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("New Mix") },
+        title = { Text(stringResource(Res.string.dialog_new_mix_title)) },
         text = {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -233,7 +258,7 @@ private fun CreateMixDialog(
                         if (coverImagePath != null) {
                             AsyncImage(
                                 model = coverImagePath,
-                                contentDescription = "Mix cover",
+                                contentDescription = stringResource(Res.string.cd_mix_cover),
                                 modifier = Modifier
                                     .size(80.dp)
                                     .align(Alignment.TopStart)
@@ -251,7 +276,7 @@ private fun CreateMixDialog(
                             ) {
                                 Icon(
                                     imageVector = Icons.Filled.AddPhotoAlternate,
-                                    contentDescription = "Add cover image",
+                                    contentDescription = stringResource(Res.string.cd_add_cover_image),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                                     modifier = Modifier.size(32.dp)
                                 )
@@ -267,7 +292,7 @@ private fun CreateMixDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Edit,
-                                contentDescription = "Edit",
+                                contentDescription = stringResource(Res.string.cd_edit),
                                 tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(13.dp)
                             )
@@ -276,7 +301,7 @@ private fun CreateMixDialog(
                 }
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text = "Add cover (optional)",
+                    text = stringResource(Res.string.mix_add_cover_optional),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -284,7 +309,7 @@ private fun CreateMixDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Mix name") },
+                    label = { Text(stringResource(Res.string.mix_name_label)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -295,11 +320,11 @@ private fun CreateMixDialog(
                 onClick = { if (name.isNotBlank()) onCreate(name.trim(), coverImagePath) },
                 enabled = name.isNotBlank()
             ) {
-                Text("Create")
+                Text(stringResource(Res.string.action_create))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
+            TextButton(onClick = onDismiss) { Text(stringResource(Res.string.action_cancel)) }
         }
     )
 }
