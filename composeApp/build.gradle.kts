@@ -9,6 +9,12 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.simiscompany.allaboutmusic.resources"
+    generateResClass = auto
+}
+
 kotlin {
     androidTarget {
         compilerOptions {
