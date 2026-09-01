@@ -44,7 +44,32 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.simiscompany.allaboutmusic.domain.model.DownloadItem
 import com.simiscompany.allaboutmusic.domain.model.Track
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.action_cancel
+import com.simiscompany.allaboutmusic.resources.action_grant_permission
+import com.simiscompany.allaboutmusic.resources.action_retry
+import com.simiscompany.allaboutmusic.resources.cd_rescan
+import com.simiscompany.allaboutmusic.resources.device_no_music
+import com.simiscompany.allaboutmusic.resources.device_permission_needed
+import com.simiscompany.allaboutmusic.resources.device_scanning
+import com.simiscompany.allaboutmusic.resources.device_track_count
+import com.simiscompany.allaboutmusic.resources.download_cancelled
+import com.simiscompany.allaboutmusic.resources.download_failed
+import com.simiscompany.allaboutmusic.resources.download_percent
+import com.simiscompany.allaboutmusic.resources.download_waiting
+import com.simiscompany.allaboutmusic.resources.library_active_downloads
+import com.simiscompany.allaboutmusic.resources.library_clear_queue
+import com.simiscompany.allaboutmusic.resources.library_downloaded_track_count
+import com.simiscompany.allaboutmusic.resources.library_no_downloads
+import com.simiscompany.allaboutmusic.resources.library_storage_short
+import com.simiscompany.allaboutmusic.resources.library_storage_used
+import com.simiscompany.allaboutmusic.resources.library_storage_warning
+import com.simiscompany.allaboutmusic.resources.library_tab_device
+import com.simiscompany.allaboutmusic.resources.library_tab_downloads
+import com.simiscompany.allaboutmusic.resources.library_title
 import com.simiscompany.allaboutmusic.ui.components.TrackCard
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LibraryScreen(
@@ -57,7 +82,10 @@ fun LibraryScreen(
 
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(8.dp))
-        Text("Library", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            stringResource(Res.string.library_title),
+            style = MaterialTheme.typography.headlineMedium
+        )
         Spacer(Modifier.height(8.dp))
 
         @OptIn(ExperimentalMaterial3Api::class)
@@ -68,12 +96,12 @@ fun LibraryScreen(
             Tab(
                 selected = state.selectedTab == LibraryTab.DOWNLOADS,
                 onClick = { viewModel.selectTab(LibraryTab.DOWNLOADS) },
-                text = { Text("Downloads") }
+                text = { Text(stringResource(Res.string.library_tab_downloads)) }
             )
             Tab(
                 selected = state.selectedTab == LibraryTab.DEVICE,
                 onClick = { viewModel.selectTab(LibraryTab.DEVICE) },
-                text = { Text("Device Music") }
+                text = { Text(stringResource(Res.string.library_tab_device)) }
             )
         }
 
@@ -121,7 +149,7 @@ private fun DownloadsTab(
     if (queueItems.isEmpty() && tracks.isEmpty()) {
         // Storage info
         Text(
-            text = "Storage used: ${formatBytes(storageUsedBytes)}",
+            text = stringResource(Res.string.library_storage_used, formatBytes(storageUsedBytes)),
             style = MaterialTheme.typography.bodySmall,
             color = if (showStorageWarning) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onSurfaceVariant
@@ -131,7 +159,7 @@ private fun DownloadsTab(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "No downloaded tracks yet.\nDownload songs from the Home tab.",
+                text = stringResource(Res.string.library_no_downloads),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -148,20 +176,23 @@ private fun DownloadsTab(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Storage: ${formatBytes(storageUsedBytes)}",
+                    text = stringResource(Res.string.library_storage_short, formatBytes(storageUsedBytes)),
                     style = MaterialTheme.typography.bodySmall,
                     color = if (showStorageWarning) MaterialTheme.colorScheme.error
                     else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 if (hasCompletedQueue) {
                     TextButton(onClick = onClearCompleted) {
-                        Text("Clear queue", style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            stringResource(Res.string.library_clear_queue),
+                            style = MaterialTheme.typography.labelSmall
+                        )
                     }
                 }
             }
             if (showStorageWarning) {
                 Text(
-                    text = "Storage usage exceeds 2GB",
+                    text = stringResource(Res.string.library_storage_warning),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -172,7 +203,7 @@ private fun DownloadsTab(
         if (queueItems.isNotEmpty()) {
             item("queue_header") {
                 Text(
-                    text = "Active Downloads",
+                    text = stringResource(Res.string.library_active_downloads),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
@@ -195,7 +226,11 @@ private fun DownloadsTab(
         if (tracks.isNotEmpty()) {
             item("tracks_header") {
                 Text(
-                    text = "${tracks.size} downloaded track${if (tracks.size != 1) "s" else ""}",
+                    text = pluralStringResource(
+                        Res.plurals.library_downloaded_track_count,
+                        tracks.size,
+                        tracks.size
+                    ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(bottom = 4.dp)
@@ -250,7 +285,10 @@ private fun DownloadQueueCard(
                 ) { status ->
                     when (status) {
                         DownloadItem.Status.PENDING ->
-                            Text("Waiting...", style = MaterialTheme.typography.labelSmall)
+                            Text(
+                                stringResource(Res.string.download_waiting),
+                                style = MaterialTheme.typography.labelSmall
+                            )
                         DownloadItem.Status.DOWNLOADING -> {
                             Column {
                                 LinearProgressIndicator(
@@ -258,20 +296,23 @@ private fun DownloadQueueCard(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    "${(item.progress * 100).toInt()}%",
+                                    stringResource(
+                                        Res.string.download_percent,
+                                        (item.progress * 100).toInt()
+                                    ),
                                     style = MaterialTheme.typography.labelSmall
                                 )
                             }
                         }
                         DownloadItem.Status.FAILED ->
                             Text(
-                                item.errorMessage ?: "Failed",
+                                item.errorMessage ?: stringResource(Res.string.download_failed),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.error
                             )
                         DownloadItem.Status.CANCELLED ->
                             Text(
-                                "Cancelled",
+                                stringResource(Res.string.download_cancelled),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -283,10 +324,10 @@ private fun DownloadQueueCard(
             when (item.status) {
                 DownloadItem.Status.PENDING,
                 DownloadItem.Status.DOWNLOADING ->
-                    TextButton(onClick = onCancel) { Text("Cancel") }
+                    TextButton(onClick = onCancel) { Text(stringResource(Res.string.action_cancel)) }
                 DownloadItem.Status.FAILED,
                 DownloadItem.Status.CANCELLED ->
-                    TextButton(onClick = onRetry) { Text("Retry") }
+                    TextButton(onClick = onRetry) { Text(stringResource(Res.string.action_retry)) }
                 else -> {}
             }
         }
@@ -324,13 +365,13 @@ private fun DeviceMusicTab(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
-                    text = "Permission needed to access device music.",
+                    text = stringResource(Res.string.device_permission_needed),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(16.dp))
                 Button(onClick = onRequestPermission) {
-                    Text("Grant Permission")
+                    Text(stringResource(Res.string.action_grant_permission))
                 }
             }
         }
@@ -345,7 +386,7 @@ private fun DeviceMusicTab(
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 CircularProgressIndicator()
                 Spacer(Modifier.height(8.dp))
-                Text("Scanning device music...")
+                Text(stringResource(Res.string.device_scanning))
             }
         }
         return
@@ -357,7 +398,11 @@ private fun DeviceMusicTab(
             contentAlignment = Alignment.CenterEnd
         ) {
             Text(
-                text = "${tracks.size} track${if (tracks.size != 1) "s" else ""} on device",
+                text = pluralStringResource(
+                    Res.plurals.device_track_count,
+                    tracks.size,
+                    tracks.size
+                ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.align(Alignment.CenterStart)
@@ -365,7 +410,7 @@ private fun DeviceMusicTab(
             IconButton(onClick = onRefresh) {
                 Icon(
                     imageVector = Icons.Filled.Refresh,
-                    contentDescription = "Rescan"
+                    contentDescription = stringResource(Res.string.cd_rescan)
                 )
             }
         }
@@ -376,7 +421,7 @@ private fun DeviceMusicTab(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "No music found on device.",
+                    text = stringResource(Res.string.device_no_music),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
