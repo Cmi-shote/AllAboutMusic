@@ -1,0 +1,116 @@
+<resources>
+    <string name="nav_home">Inicio</string>
+    <string name="nav_library">Biblioteca</string>
+    <string name="nav_mixes">Mezclas</string>
+
+    <string name="action_ok">Aceptar</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="action_create">Crear</string>
+    <string name="dialog_error_title">Error</string>
+
+    <string name="home_search_placeholder">Buscar canciones, artistas…</string>
+    <string name="cd_search">Buscar</string>
+    <string name="cd_close_search">Cerrar búsqueda</string>
+    <string name="genre_featured">Destacados</string>
+    <string name="home_no_tracks">No se encontraron pistas</string>
+    <string name="error_unknown">Error desconocido</string>
+
+    <string name="cd_download">Descargar</string>
+    <string name="cd_downloaded">Descargado</string>
+    <string name="download_waiting">Esperando…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">Completado</string>
+    <string name="download_failed">Error</string>
+    <string name="download_cancelled">Cancelado</string>
+
+    <string name="cd_back">Atrás</string>
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">Pista %1$d de %2$d</string>
+    <string name="cd_previous">Anterior</string>
+    <string name="cd_next">Siguiente</string>
+    <string name="cd_play">Reproducir</string>
+    <string name="cd_pause">Pausar</string>
+    <string name="player_queued">En cola…</string>
+    <string name="dialog_storage_full_title">Almacenamiento lleno</string>
+
+    <string name="library_title">Biblioteca</string>
+    <string name="library_tab_downloads">Descargas</string>
+    <string name="library_tab_device">Música del dispositivo</string>
+    <string name="library_storage_used">Almacenamiento usado: %1$s</string>
+    <string name="library_storage_short">Almacenamiento: %1$s</string>
+    <string name="library_storage_warning">El uso de almacenamiento supera los 2 GB</string>
+    <string name="library_clear_queue">Vaciar cola</string>
+    <string name="library_no_downloads">Aún no hay pistas descargadas.\nDescarga canciones desde la pestaña Inicio.</string>
+    <string name="library_active_downloads">Descargas activas</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="one">%1$d pista descargada</item>
+        <item quantity="other">%1$d pistas descargadas</item>
+    </plurals>
+
+    <string name="device_permission_needed">Se necesita permiso para acceder a la música del dispositivo.</string>
+    <string name="action_grant_permission">Conceder permiso</string>
+    <string name="device_scanning">Analizando la música del dispositivo…</string>
+    <string name="device_no_music">No se encontró música en el dispositivo.</string>
+    <string name="cd_rescan">Volver a analizar</string>
+    <plurals name="device_track_count">
+        <item quantity="one">%1$d pista en el dispositivo</item>
+        <item quantity="other">%1$d pistas en el dispositivo</item>
+    </plurals>
+
+    <string name="downloads_title">Descargas</string>
+    <string name="downloads_clear_completed">Borrar completadas</string>
+    <string name="downloads_empty">Aún no hay descargas</string>
+
+    <string name="mixes_title">Mezclas</string>
+    <string name="mixes_empty">Aún no hay mezclas.\nToca + para crear una.</string>
+    <string name="cd_create_mix">Crear mezcla</string>
+    <string name="cd_mix_cover">Portada de la mezcla</string>
+    <string name="cd_default_cover">Portada predeterminada</string>
+    <string name="cd_play_mix">Reproducir mezcla</string>
+    <string name="cd_delete_mix">Eliminar mezcla</string>
+    <plurals name="mix_track_count">
+        <item quantity="one">%1$d pista</item>
+        <item quantity="other">%1$d pistas</item>
+    </plurals>
+    <string name="dialog_new_mix_title">Nueva mezcla</string>
+    <string name="cd_add_cover_image">Añadir imagen de portada</string>
+    <string name="cd_edit">Editar</string>
+    <string name="mix_add_cover_optional">Añadir portada (opcional)</string>
+    <string name="mix_name_label">Nombre de la mezcla</string>
+
+    <string name="mix_default_name">Mezcla</string>
+    <string name="cd_edit_cover">Editar portada</string>
+    <string name="cd_export_mix">Exportar mezcla</string>
+    <string name="cd_add_track">Añadir pista</string>
+    <string name="cd_reorder">Reordenar</string>
+    <string name="mix_detail_empty">No hay pistas en esta mezcla.\nToca + para añadir pistas descargadas.</string>
+    <string name="mix_remove_track">Quitar de la mezcla</string>
+    <string name="add_track_title">Añadir pista</string>
+    <string name="add_track_empty">No hay pistas descargadas disponibles.\nDescarga canciones primero para añadirlas a una mezcla.</string>
+
+    <string name="cue_summary">Cue: %1$s – %2$s</string>
+    <string name="cue_end">fin</string>
+    <string name="cue_in">Cue de entrada: %1$s</string>
+    <string name="cue_out">Cue de salida: %1$s</string>
+    <string name="cue_set_cue_out">Definir cue de salida</string>
+    <string name="cue_play_to_end">Reproducir hasta el final</string>
+
+    <string name="export_title">Exportando mezcla</string>
+    <string name="export_cancel">Cancelar exportación</string>
+    <string name="export_background">Segundo plano</string>
+    <string name="export_dismiss_hint">Toca Segundo plano para cerrar este diálogo.\nLa exportación continuará.</string>
+    <string name="export_in_progress_title">Exportación en curso</string>
+    <string name="export_in_progress_message">Salir de esta pantalla cancelará la exportación actual. ¿Seguro que quieres continuar?</string>
+    <string name="export_leave_and_cancel">Salir y cancelar</string>
+    <string name="export_stay">Quedarse</string>
+    <string name="export_complete_title">Exportación completada</string>
+    <string name="export_saved_to">Guardado en: %1$s</string>
+
+    <string name="error_load_tracks">No se pudieron cargar las pistas</string>
+    <string name="error_search">Error en la búsqueda</string>
+    <string name="error_max_tracks_per_mix">Máximo 50 pistas por mezcla</string>
+    <string name="error_no_tracks_to_export">No hay pistas para exportar</string>
+    <string name="error_tracks_not_downloaded">Algunas pistas no están descargadas: %1$s</string>
+    <string name="error_export_failed">Error al exportar: %1$s</string>
+</resources>
