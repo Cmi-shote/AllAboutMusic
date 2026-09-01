@@ -34,6 +34,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.simiscompany.allaboutmusic.domain.model.DownloadItem
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.action_cancel
+import com.simiscompany.allaboutmusic.resources.action_retry
+import com.simiscompany.allaboutmusic.resources.download_cancelled
+import com.simiscompany.allaboutmusic.resources.download_completed
+import com.simiscompany.allaboutmusic.resources.download_failed
+import com.simiscompany.allaboutmusic.resources.download_percent
+import com.simiscompany.allaboutmusic.resources.download_waiting
+import com.simiscompany.allaboutmusic.resources.downloads_clear_completed
+import com.simiscompany.allaboutmusic.resources.downloads_empty
+import com.simiscompany.allaboutmusic.resources.downloads_title
+import com.simiscompany.allaboutmusic.resources.library_storage_used
+import com.simiscompany.allaboutmusic.resources.library_storage_warning
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun DownloadsScreen(
@@ -45,19 +59,25 @@ fun DownloadsScreen(
 
     Column(modifier = modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(8.dp))
-        Text("Downloads", style = MaterialTheme.typography.headlineMedium)
+        Text(
+            stringResource(Res.string.downloads_title),
+            style = MaterialTheme.typography.headlineMedium
+        )
 
         // Storage info
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Storage used: ${formatBytes(state.storageUsedBytes)}",
+            text = stringResource(
+                Res.string.library_storage_used,
+                formatBytes(state.storageUsedBytes)
+            ),
             style = MaterialTheme.typography.bodySmall,
             color = if (state.showStorageWarning) MaterialTheme.colorScheme.error
             else MaterialTheme.colorScheme.onSurfaceVariant
         )
         if (state.showStorageWarning) {
             Text(
-                text = "Storage usage exceeds 2GB",
+                text = stringResource(Res.string.library_storage_warning),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error
             )
@@ -67,14 +87,14 @@ fun DownloadsScreen(
 
         if (state.downloads.any { it.status == DownloadItem.Status.COMPLETED }) {
             TextButton(onClick = { viewModel.clearCompleted() }) {
-                Text("Clear completed")
+                Text(stringResource(Res.string.downloads_clear_completed))
             }
         }
 
         if (state.downloads.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(
-                    text = "No downloads yet",
+                    text = stringResource(Res.string.downloads_empty),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -150,7 +170,10 @@ private fun DownloadItemCard(
                     Column {
                         when (status) {
                             DownloadItem.Status.PENDING -> {
-                                Text("Waiting...", style = MaterialTheme.typography.labelSmall)
+                                Text(
+                                    stringResource(Res.string.download_waiting),
+                                    style = MaterialTheme.typography.labelSmall
+                                )
                             }
                             DownloadItem.Status.DOWNLOADING -> {
                                 LinearProgressIndicator(
@@ -158,27 +181,30 @@ private fun DownloadItemCard(
                                     modifier = Modifier.fillMaxWidth()
                                 )
                                 Text(
-                                    "${(item.progress * 100).toInt()}%",
+                                    stringResource(
+                                        Res.string.download_percent,
+                                        (item.progress * 100).toInt()
+                                    ),
                                     style = MaterialTheme.typography.labelSmall
                                 )
                             }
                             DownloadItem.Status.COMPLETED -> {
                                 Text(
-                                    "Completed",
+                                    stringResource(Res.string.download_completed),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
                             DownloadItem.Status.FAILED -> {
                                 Text(
-                                    item.errorMessage ?: "Failed",
+                                    item.errorMessage ?: stringResource(Res.string.download_failed),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.error
                                 )
                             }
                             DownloadItem.Status.CANCELLED -> {
                                 Text(
-                                    "Cancelled",
+                                    stringResource(Res.string.download_cancelled),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -192,11 +218,11 @@ private fun DownloadItemCard(
             when (item.status) {
                 DownloadItem.Status.PENDING,
                 DownloadItem.Status.DOWNLOADING -> {
-                    TextButton(onClick = onCancel) { Text("Cancel") }
+                    TextButton(onClick = onCancel) { Text(stringResource(Res.string.action_cancel)) }
                 }
                 DownloadItem.Status.FAILED,
                 DownloadItem.Status.CANCELLED -> {
-                    TextButton(onClick = onRetry) { Text("Retry") }
+                    TextButton(onClick = onRetry) { Text(stringResource(Res.string.action_retry)) }
                 }
                 else -> {}
             }
