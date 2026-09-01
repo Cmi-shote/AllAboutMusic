@@ -50,7 +50,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.action_ok
+import com.simiscompany.allaboutmusic.resources.attribution_jamendo
+import com.simiscompany.allaboutmusic.resources.cd_back
+import com.simiscompany.allaboutmusic.resources.cd_download
+import com.simiscompany.allaboutmusic.resources.cd_downloaded
+import com.simiscompany.allaboutmusic.resources.cd_next
+import com.simiscompany.allaboutmusic.resources.cd_pause
+import com.simiscompany.allaboutmusic.resources.cd_play
+import com.simiscompany.allaboutmusic.resources.cd_previous
+import com.simiscompany.allaboutmusic.resources.dialog_storage_full_title
+import com.simiscompany.allaboutmusic.resources.player_mix_position
+import com.simiscompany.allaboutmusic.resources.player_queued
 import com.simiscompany.allaboutmusic.ui.components.formatDuration
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PlayerScreen(
@@ -84,7 +98,7 @@ fun PlayerScreen(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = stringResource(Res.string.cd_back)
                     )
                 }
             }
@@ -129,7 +143,7 @@ fun PlayerScreen(
             )
             if (track.source == "jamendo") {
                 Text(
-                    text = "via Jamendo (CC BY)",
+                    text = stringResource(Res.string.attribution_jamendo),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -138,7 +152,11 @@ fun PlayerScreen(
             // Mix mode indicator
             if (state.isMixMode) {
                 Text(
-                    text = "Track ${state.mixTrackIndex + 1} of ${state.mixTrackCount}",
+                    text = stringResource(
+                        Res.string.player_mix_position,
+                        state.mixTrackIndex + 1,
+                        state.mixTrackCount
+                    ),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -198,7 +216,7 @@ fun PlayerScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.SkipPrevious,
-                                contentDescription = "Previous",
+                                contentDescription = stringResource(Res.string.cd_previous),
                                 modifier = Modifier.size(32.dp)
                             )
                         }
@@ -216,7 +234,9 @@ fun PlayerScreen(
                     ) {
                         Icon(
                             imageVector = if (state.isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                            contentDescription = if (state.isPlaying) "Pause" else "Play",
+                            contentDescription = stringResource(
+                                if (state.isPlaying) Res.string.cd_pause else Res.string.cd_play
+                            ),
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(36.dp)
                         )
@@ -232,7 +252,7 @@ fun PlayerScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.SkipNext,
-                                contentDescription = "Next",
+                                contentDescription = stringResource(Res.string.cd_next),
                                 modifier = Modifier.size(32.dp)
                             )
                         }
@@ -246,14 +266,19 @@ fun PlayerScreen(
             if (!state.isMixMode) {
                 if (track.isDownloaded) {
                     OutlinedButton(onClick = {}, enabled = false) {
-                        Text("Downloaded")
+                        Text(stringResource(Res.string.cd_downloaded))
                     }
                 } else {
                     Button(
                         onClick = { viewModel.downloadCurrentTrack() },
                         enabled = !isDownloading
                     ) {
-                        Text(if (isDownloading) "Queued..." else "Download")
+                        Text(
+                            stringResource(
+                                if (isDownloading) Res.string.player_queued
+                                else Res.string.cd_download
+                            )
+                        )
                     }
                 }
             }
@@ -265,10 +290,10 @@ fun PlayerScreen(
             onDismissRequest = { viewModel.clearDownloadError() },
             confirmButton = {
                 TextButton(onClick = { viewModel.clearDownloadError() }) {
-                    Text("OK")
+                    Text(stringResource(Res.string.action_ok))
                 }
             },
-            title = { Text("Storage Full") },
+            title = { Text(stringResource(Res.string.dialog_storage_full_title)) },
             text = { Text(downloadError ?: "") }
         )
     }
