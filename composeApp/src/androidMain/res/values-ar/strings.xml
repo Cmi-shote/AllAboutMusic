@@ -1,0 +1,9 @@
+<resources>
+    <string name="notification_channel_downloads">التنزيلات</string>
+    <string name="notification_channel_downloads_description">تقدّم تنزيل الموسيقى</string>
+    <string name="notification_downloading_title">جارٍ تنزيل المقطع</string>
+    <string name="notification_progress_percent">%1$d%%</string>
+    <string name="notification_download_complete_title">اكتمل التنزيل</string>
+    <string name="notification_download_complete_text">المقطع جاهز للتشغيل دون اتصال</string>
+    <string name="notification_download_failed">فشل التنزيل</string>
+</resources>

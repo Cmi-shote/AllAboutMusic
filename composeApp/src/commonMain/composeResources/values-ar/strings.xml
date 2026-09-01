@@ -1,0 +1,128 @@
+<resources>
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_library">المكتبة</string>
+    <string name="nav_mixes">المكسات</string>
+
+    <string name="action_ok">حسنًا</string>
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_retry">إعادة المحاولة</string>
+    <string name="action_create">إنشاء</string>
+    <string name="dialog_error_title">خطأ</string>
+
+    <string name="home_search_placeholder">ابحث عن أغانٍ أو فنانين…</string>
+    <string name="cd_search">بحث</string>
+    <string name="cd_close_search">إغلاق البحث</string>
+    <string name="genre_featured">مختارات</string>
+    <string name="home_no_tracks">لم يتم العثور على مقاطع</string>
+    <string name="error_unknown">خطأ غير معروف</string>
+
+    <string name="cd_download">تنزيل</string>
+    <string name="cd_downloaded">تم التنزيل</string>
+    <string name="download_waiting">في الانتظار…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">مكتمل</string>
+    <string name="download_failed">فشل</string>
+    <string name="download_cancelled">أُلغي</string>
+
+    <string name="cd_back">رجوع</string>
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">المقطع %1$d من %2$d</string>
+    <string name="cd_previous">السابق</string>
+    <string name="cd_next">التالي</string>
+    <string name="cd_play">تشغيل</string>
+    <string name="cd_pause">إيقاف مؤقت</string>
+    <string name="player_queued">في قائمة الانتظار…</string>
+    <string name="dialog_storage_full_title">التخزين ممتلئ</string>
+
+    <string name="library_title">المكتبة</string>
+    <string name="library_tab_downloads">التنزيلات</string>
+    <string name="library_tab_device">موسيقى الجهاز</string>
+    <string name="library_storage_used">التخزين المستخدم: %1$s</string>
+    <string name="library_storage_short">التخزين: %1$s</string>
+    <string name="library_storage_warning">استخدام التخزين يتجاوز 2 غيغابايت</string>
+    <string name="library_clear_queue">مسح قائمة الانتظار</string>
+    <string name="library_no_downloads">لا توجد مقاطع منزَّلة بعد.\nنزِّل أغاني من تبويب الرئيسية.</string>
+    <string name="library_active_downloads">التنزيلات النشطة</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="zero">لا توجد مقاطع منزَّلة</item>
+        <item quantity="one">مقطع منزَّل واحد</item>
+        <item quantity="two">مقطعان منزَّلان</item>
+        <item quantity="few">%1$d مقاطع منزَّلة</item>
+        <item quantity="many">%1$d مقطعًا منزَّلًا</item>
+        <item quantity="other">%1$d مقطع منزَّل</item>
+    </plurals>
+
+    <string name="device_permission_needed">مطلوب إذن للوصول إلى موسيقى الجهاز.</string>
+    <string name="action_grant_permission">منح الإذن</string>
+    <string name="device_scanning">جارٍ فحص موسيقى الجهاز…</string>
+    <string name="device_no_music">لم يتم العثور على موسيقى على الجهاز.</string>
+    <string name="cd_rescan">إعادة الفحص</string>
+    <plurals name="device_track_count">
+        <item quantity="zero">لا توجد مقاطع على الجهاز</item>
+        <item quantity="one">مقطع واحد على الجهاز</item>
+        <item quantity="two">مقطعان على الجهاز</item>
+        <item quantity="few">%1$d مقاطع على الجهاز</item>
+        <item quantity="many">%1$d مقطعًا على الجهاز</item>
+        <item quantity="other">%1$d مقطع على الجهاز</item>
+    </plurals>
+
+    <string name="downloads_title">التنزيلات</string>
+    <string name="downloads_clear_completed">مسح المكتملة</string>
+    <string name="downloads_empty">لا توجد تنزيلات بعد</string>
+
+    <string name="mixes_title">المكسات</string>
+    <string name="mixes_empty">لا توجد مكسات بعد.\nاضغط + لإنشاء واحد.</string>
+    <string name="cd_create_mix">إنشاء مكس</string>
+    <string name="cd_mix_cover">غلاف المكس</string>
+    <string name="cd_default_cover">الغلاف الافتراضي</string>
+    <string name="cd_play_mix">تشغيل المكس</string>
+    <string name="cd_delete_mix">حذف المكس</string>
+    <plurals name="mix_track_count">
+        <item quantity="zero">لا توجد مقاطع</item>
+        <item quantity="one">مقطع واحد</item>
+        <item quantity="two">مقطعان</item>
+        <item quantity="few">%1$d مقاطع</item>
+        <item quantity="many">%1$d مقطعًا</item>
+        <item quantity="other">%1$d مقطع</item>
+    </plurals>
+    <string name="dialog_new_mix_title">مكس جديد</string>
+    <string name="cd_add_cover_image">إضافة صورة غلاف</string>
+    <string name="cd_edit">تعديل</string>
+    <string name="mix_add_cover_optional">إضافة غلاف (اختياري)</string>
+    <string name="mix_name_label">اسم المكس</string>
+
+    <string name="mix_default_name">مكس</string>
+    <string name="cd_edit_cover">تعديل الغلاف</string>
+    <string name="cd_export_mix">تصدير المكس</string>
+    <string name="cd_add_track">إضافة مقطع</string>
+    <string name="cd_reorder">إعادة الترتيب</string>
+    <string name="mix_detail_empty">لا توجد مقاطع في هذا المكس.\nاضغط + لإضافة مقاطع منزَّلة.</string>
+    <string name="mix_remove_track">إزالة من المكس</string>
+    <string name="add_track_title">إضافة مقطع</string>
+    <string name="add_track_empty">لا توجد مقاطع منزَّلة متاحة.\nنزِّل أغاني أولًا لإضافتها إلى مكس.</string>
+
+    <string name="cue_summary">النقطة: %1$s – %2$s</string>
+    <string name="cue_end">النهاية</string>
+    <string name="cue_in">نقطة البداية: %1$s</string>
+    <string name="cue_out">نقطة النهاية: %1$s</string>
+    <string name="cue_set_cue_out">تعيين نقطة النهاية</string>
+    <string name="cue_play_to_end">التشغيل حتى النهاية</string>
+
+    <string name="export_title">جارٍ تصدير المكس</string>
+    <string name="export_cancel">إلغاء التصدير</string>
+    <string name="export_background">في الخلفية</string>
+    <string name="export_dismiss_hint">اضغط «في الخلفية» لإغلاق هذا المربع.\nسيستمر التصدير.</string>
+    <string name="export_in_progress_title">التصدير قيد التنفيذ</string>
+    <string name="export_in_progress_message">مغادرة هذه الشاشة ستلغي التصدير الحالي. هل أنت متأكد؟</string>
+    <string name="export_leave_and_cancel">المغادرة والإلغاء</string>
+    <string name="export_stay">البقاء</string>
+    <string name="export_complete_title">اكتمل التصدير</string>
+    <string name="export_saved_to">تم الحفظ في: %1$s</string>
+
+    <string name="error_load_tracks">تعذّر تحميل المقاطع</string>
+    <string name="error_search">فشل البحث</string>
+    <string name="error_max_tracks_per_mix">50 مقطعًا كحد أقصى لكل مكس</string>
+    <string name="error_no_tracks_to_export">لا توجد مقاطع للتصدير</string>
+    <string name="error_tracks_not_downloaded">بعض المقاطع غير منزَّلة: %1$s</string>
+    <string name="error_export_failed">فشل التصدير: %1$s</string>
+</resources>
