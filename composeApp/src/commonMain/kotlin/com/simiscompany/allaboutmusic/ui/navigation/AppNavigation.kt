@@ -40,7 +40,13 @@ import com.simiscompany.allaboutmusic.ui.mix.MixListScreen
 import com.simiscompany.allaboutmusic.ui.mix.MixListViewModel
 import com.simiscompany.allaboutmusic.ui.player.PlayerScreen
 import com.simiscompany.allaboutmusic.ui.player.PlayerViewModel
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.nav_home
+import com.simiscompany.allaboutmusic.resources.nav_library
+import com.simiscompany.allaboutmusic.resources.nav_mixes
 import kotlinx.serialization.Serializable
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable object HomeRoute
@@ -50,15 +56,15 @@ import org.koin.compose.viewmodel.koinViewModel
 @Serializable object PlayerRoute
 
 data class BottomNavItem(
-    val label: String,
+    val label: StringResource,
     val route: Any,
     val icon: ImageVector
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("Home", HomeRoute, Icons.Filled.Home),
-    BottomNavItem("Library", LibraryRoute, Icons.Filled.LibraryMusic),
-    BottomNavItem("Mixes", MixListRoute, Icons.AutoMirrored.Filled.QueueMusic)
+    BottomNavItem(Res.string.nav_home, HomeRoute, Icons.Filled.Home),
+    BottomNavItem(Res.string.nav_library, LibraryRoute, Icons.Filled.LibraryMusic),
+    BottomNavItem(Res.string.nav_mixes, MixListRoute, Icons.AutoMirrored.Filled.QueueMusic)
 )
 
 @Composable
@@ -118,11 +124,11 @@ fun AppNavigation(
                                         restoreState = true
                                     }
                                 },
-                                label = { Text(item.label) },
+                                label = { Text(stringResource(item.label)) },
                                 icon = {
                                     Icon(
                                         imageVector = item.icon,
-                                        contentDescription = item.label
+                                        contentDescription = stringResource(item.label)
                                     )
                                 }
                             )
