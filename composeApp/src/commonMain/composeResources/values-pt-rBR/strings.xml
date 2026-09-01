@@ -1,0 +1,119 @@
+<resources>
+    <string name="nav_home">Início</string>
+    <string name="nav_library">Biblioteca</string>
+    <string name="nav_mixes">Mixes</string>
+
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_retry">Tentar novamente</string>
+    <string name="action_create">Criar</string>
+    <string name="dialog_error_title">Erro</string>
+
+    <string name="home_search_placeholder">Buscar músicas, artistas…</string>
+    <string name="cd_search">Buscar</string>
+    <string name="cd_close_search">Fechar busca</string>
+    <string name="genre_featured">Destaques</string>
+    <string name="home_no_tracks">Nenhuma faixa encontrada</string>
+    <string name="error_unknown">Erro desconhecido</string>
+
+    <string name="cd_download">Baixar</string>
+    <string name="cd_downloaded">Baixada</string>
+    <string name="download_waiting">Aguardando…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">Concluído</string>
+    <string name="download_failed">Falhou</string>
+    <string name="download_cancelled">Cancelado</string>
+
+    <string name="cd_back">Voltar</string>
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">Faixa %1$d de %2$d</string>
+    <string name="cd_previous">Anterior</string>
+    <string name="cd_next">Próxima</string>
+    <string name="cd_play">Reproduzir</string>
+    <string name="cd_pause">Pausar</string>
+    <string name="player_queued">Na fila…</string>
+    <string name="dialog_storage_full_title">Armazenamento cheio</string>
+
+    <string name="library_title">Biblioteca</string>
+    <string name="library_tab_downloads">Downloads</string>
+    <string name="library_tab_device">Música do dispositivo</string>
+    <string name="library_storage_used">Armazenamento usado: %1$s</string>
+    <string name="library_storage_short">Armazenamento: %1$s</string>
+    <string name="library_storage_warning">O uso de armazenamento excede 2 GB</string>
+    <string name="library_clear_queue">Limpar fila</string>
+    <string name="library_no_downloads">Nenhuma faixa baixada ainda.\nBaixe músicas na aba Início.</string>
+    <string name="library_active_downloads">Downloads ativos</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="one">%1$d faixa baixada</item>
+        <item quantity="many">%1$d faixa baixada</item>
+        <item quantity="other">%1$d faixas baixadas</item>
+    </plurals>
+
+    <string name="device_permission_needed">É necessária permissão para acessar a música do dispositivo.</string>
+    <string name="action_grant_permission">Conceder permissão</string>
+    <string name="device_scanning">Verificando a música do dispositivo…</string>
+    <string name="device_no_music">Nenhuma música encontrada no dispositivo.</string>
+    <string name="cd_rescan">Verificar novamente</string>
+    <plurals name="device_track_count">
+        <item quantity="one">%1$d faixa no dispositivo</item>
+        <item quantity="many">%1$d faixa no dispositivo</item>
+        <item quantity="other">%1$d faixas no dispositivo</item>
+    </plurals>
+
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_clear_completed">Limpar concluídos</string>
+    <string name="downloads_empty">Nenhum download ainda</string>
+
+    <string name="mixes_title">Mixes</string>
+    <string name="mixes_empty">Nenhum mix ainda.\nToque em + para criar um.</string>
+    <string name="cd_create_mix">Criar mix</string>
+    <string name="cd_mix_cover">Capa do mix</string>
+    <string name="cd_default_cover">Capa padrão</string>
+    <string name="cd_play_mix">Reproduzir mix</string>
+    <string name="cd_delete_mix">Excluir mix</string>
+    <plurals name="mix_track_count">
+        <item quantity="one">%1$d faixa</item>
+        <item quantity="many">%1$d faixa</item>
+        <item quantity="other">%1$d faixas</item>
+    </plurals>
+    <string name="dialog_new_mix_title">Novo mix</string>
+    <string name="cd_add_cover_image">Adicionar imagem de capa</string>
+    <string name="cd_edit">Editar</string>
+    <string name="mix_add_cover_optional">Adicionar capa (opcional)</string>
+    <string name="mix_name_label">Nome do mix</string>
+
+    <string name="mix_default_name">Mix</string>
+    <string name="cd_edit_cover">Editar capa</string>
+    <string name="cd_export_mix">Exportar mix</string>
+    <string name="cd_add_track">Adicionar faixa</string>
+    <string name="cd_reorder">Reordenar</string>
+    <string name="mix_detail_empty">Nenhuma faixa neste mix.\nToque em + para adicionar faixas baixadas.</string>
+    <string name="mix_remove_track">Remover do mix</string>
+    <string name="add_track_title">Adicionar faixa</string>
+    <string name="add_track_empty">Nenhuma faixa baixada disponível.\nBaixe músicas primeiro para adicioná-las a um mix.</string>
+
+    <string name="cue_summary">Cue: %1$s – %2$s</string>
+    <string name="cue_end">fim</string>
+    <string name="cue_in">Cue de entrada: %1$s</string>
+    <string name="cue_out">Cue de saída: %1$s</string>
+    <string name="cue_set_cue_out">Definir cue de saída</string>
+    <string name="cue_play_to_end">Reproduzir até o fim</string>
+
+    <string name="export_title">Exportando mix</string>
+    <string name="export_cancel">Cancelar exportação</string>
+    <string name="export_background">Segundo plano</string>
+    <string name="export_dismiss_hint">Toque em Segundo plano para fechar esta caixa de diálogo.\nA exportação continuará.</string>
+    <string name="export_in_progress_title">Exportação em andamento</string>
+    <string name="export_in_progress_message">Sair desta tela cancelará a exportação atual. Tem certeza?</string>
+    <string name="export_leave_and_cancel">Sair e cancelar</string>
+    <string name="export_stay">Ficar</string>
+    <string name="export_complete_title">Exportação concluída</string>
+    <string name="export_saved_to">Salvo em: %1$s</string>
+
+    <string name="error_load_tracks">Falha ao carregar as faixas</string>
+    <string name="error_search">Falha na busca</string>
+    <string name="error_max_tracks_per_mix">Máximo de 50 faixas por mix</string>
+    <string name="error_no_tracks_to_export">Nenhuma faixa para exportar</string>
+    <string name="error_tracks_not_downloaded">Algumas faixas não foram baixadas: %1$s</string>
+    <string name="error_export_failed">Falha na exportação: %1$s</string>
+</resources>

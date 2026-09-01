@@ -1,0 +1,9 @@
+<resources>
+    <string name="notification_channel_downloads">Downloads</string>
+    <string name="notification_channel_downloads_description">Progresso do download de música</string>
+    <string name="notification_downloading_title">Baixando faixa</string>
+    <string name="notification_progress_percent">%1$d%%</string>
+    <string name="notification_download_complete_title">Download concluído</string>
+    <string name="notification_download_complete_text">Faixa pronta para reprodução offline</string>
+    <string name="notification_download_failed">Falha no download</string>
+</resources>
