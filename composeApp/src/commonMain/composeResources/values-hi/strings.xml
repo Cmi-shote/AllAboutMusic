@@ -1,0 +1,116 @@
+<resources>
+    <string name="nav_home">होम</string>
+    <string name="nav_library">लाइब्रेरी</string>
+    <string name="nav_mixes">मिक्स</string>
+
+    <string name="action_ok">ठीक है</string>
+    <string name="action_cancel">रद्द करें</string>
+    <string name="action_retry">पुनः प्रयास करें</string>
+    <string name="action_create">बनाएँ</string>
+    <string name="dialog_error_title">त्रुटि</string>
+
+    <string name="home_search_placeholder">गाने, कलाकार खोजें…</string>
+    <string name="cd_search">खोजें</string>
+    <string name="cd_close_search">खोज बंद करें</string>
+    <string name="genre_featured">विशेष</string>
+    <string name="home_no_tracks">कोई ट्रैक नहीं मिला</string>
+    <string name="error_unknown">अज्ञात त्रुटि</string>
+
+    <string name="cd_download">डाउनलोड करें</string>
+    <string name="cd_downloaded">डाउनलोड हो गया</string>
+    <string name="download_waiting">प्रतीक्षा में…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">पूर्ण</string>
+    <string name="download_failed">विफल</string>
+    <string name="download_cancelled">रद्द किया गया</string>
+
+    <string name="cd_back">वापस</string>
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">%2$d में से ट्रैक %1$d</string>
+    <string name="cd_previous">पिछला</string>
+    <string name="cd_next">अगला</string>
+    <string name="cd_play">चलाएँ</string>
+    <string name="cd_pause">रोकें</string>
+    <string name="player_queued">कतार में…</string>
+    <string name="dialog_storage_full_title">स्टोरेज भरा है</string>
+
+    <string name="library_title">लाइब्रेरी</string>
+    <string name="library_tab_downloads">डाउनलोड</string>
+    <string name="library_tab_device">डिवाइस का संगीत</string>
+    <string name="library_storage_used">उपयोग किया गया स्टोरेज: %1$s</string>
+    <string name="library_storage_short">स्टोरेज: %1$s</string>
+    <string name="library_storage_warning">स्टोरेज का उपयोग 2 GB से अधिक है</string>
+    <string name="library_clear_queue">कतार साफ़ करें</string>
+    <string name="library_no_downloads">अभी तक कोई ट्रैक डाउनलोड नहीं हुआ।\nहोम टैब से गाने डाउनलोड करें।</string>
+    <string name="library_active_downloads">सक्रिय डाउनलोड</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="one">%1$d ट्रैक डाउनलोड हुआ</item>
+        <item quantity="other">%1$d ट्रैक डाउनलोड हुए</item>
+    </plurals>
+
+    <string name="device_permission_needed">डिवाइस का संगीत एक्सेस करने के लिए अनुमति आवश्यक है।</string>
+    <string name="action_grant_permission">अनुमति दें</string>
+    <string name="device_scanning">डिवाइस का संगीत स्कैन किया जा रहा है…</string>
+    <string name="device_no_music">डिवाइस पर कोई संगीत नहीं मिला।</string>
+    <string name="cd_rescan">फिर से स्कैन करें</string>
+    <plurals name="device_track_count">
+        <item quantity="one">डिवाइस पर %1$d ट्रैक</item>
+        <item quantity="other">डिवाइस पर %1$d ट्रैक</item>
+    </plurals>
+
+    <string name="downloads_title">डाउनलोड</string>
+    <string name="downloads_clear_completed">पूर्ण हुए हटाएँ</string>
+    <string name="downloads_empty">अभी तक कोई डाउनलोड नहीं</string>
+
+    <string name="mixes_title">मिक्स</string>
+    <string name="mixes_empty">अभी तक कोई मिक्स नहीं।\nएक बनाने के लिए + पर टैप करें।</string>
+    <string name="cd_create_mix">मिक्स बनाएँ</string>
+    <string name="cd_mix_cover">मिक्स कवर</string>
+    <string name="cd_default_cover">डिफ़ॉल्ट कवर</string>
+    <string name="cd_play_mix">मिक्स चलाएँ</string>
+    <string name="cd_delete_mix">मिक्स हटाएँ</string>
+    <plurals name="mix_track_count">
+        <item quantity="one">%1$d ट्रैक</item>
+        <item quantity="other">%1$d ट्रैक</item>
+    </plurals>
+    <string name="dialog_new_mix_title">नया मिक्स</string>
+    <string name="cd_add_cover_image">कवर छवि जोड़ें</string>
+    <string name="cd_edit">संपादित करें</string>
+    <string name="mix_add_cover_optional">कवर जोड़ें (वैकल्पिक)</string>
+    <string name="mix_name_label">मिक्स का नाम</string>
+
+    <string name="mix_default_name">मिक्स</string>
+    <string name="cd_edit_cover">कवर संपादित करें</string>
+    <string name="cd_export_mix">मिक्स निर्यात करें</string>
+    <string name="cd_add_track">ट्रैक जोड़ें</string>
+    <string name="cd_reorder">क्रम बदलें</string>
+    <string name="mix_detail_empty">इस मिक्स में कोई ट्रैक नहीं है।\nडाउनलोड किए गए ट्रैक जोड़ने के लिए + पर टैप करें।</string>
+    <string name="mix_remove_track">मिक्स से हटाएँ</string>
+    <string name="add_track_title">ट्रैक जोड़ें</string>
+    <string name="add_track_empty">कोई डाउनलोड किया गया ट्रैक उपलब्ध नहीं है।\nमिक्स में जोड़ने के लिए पहले गाने डाउनलोड करें।</string>
+
+    <string name="cue_summary">क्यू: %1$s – %2$s</string>
+    <string name="cue_end">अंत</string>
+    <string name="cue_in">क्यू इन: %1$s</string>
+    <string name="cue_out">क्यू आउट: %1$s</string>
+    <string name="cue_set_cue_out">क्यू आउट सेट करें</string>
+    <string name="cue_play_to_end">अंत तक चलाएँ</string>
+
+    <string name="export_title">मिक्स निर्यात हो रहा है</string>
+    <string name="export_cancel">निर्यात रद्द करें</string>
+    <string name="export_background">बैकग्राउंड</string>
+    <string name="export_dismiss_hint">इस डायलॉग को बंद करने के लिए बैकग्राउंड पर टैप करें।\nनिर्यात जारी रहेगा।</string>
+    <string name="export_in_progress_title">निर्यात जारी है</string>
+    <string name="export_in_progress_message">इस स्क्रीन से बाहर जाने पर वर्तमान निर्यात रद्द हो जाएगा। क्या आप निश्चित हैं?</string>
+    <string name="export_leave_and_cancel">बाहर जाएँ और रद्द करें</string>
+    <string name="export_stay">यहीं रहें</string>
+    <string name="export_complete_title">निर्यात पूर्ण</string>
+    <string name="export_saved_to">यहाँ सहेजा गया: %1$s</string>
+
+    <string name="error_load_tracks">ट्रैक लोड नहीं हो सके</string>
+    <string name="error_search">खोज विफल</string>
+    <string name="error_max_tracks_per_mix">प्रति मिक्स अधिकतम 50 ट्रैक</string>
+    <string name="error_no_tracks_to_export">निर्यात करने के लिए कोई ट्रैक नहीं</string>
+    <string name="error_tracks_not_downloaded">कुछ ट्रैक डाउनलोड नहीं हुए हैं: %1$s</string>
+    <string name="error_export_failed">निर्यात विफल: %1$s</string>
+</resources>

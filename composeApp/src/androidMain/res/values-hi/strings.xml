@@ -1,0 +1,9 @@
+<resources>
+    <string name="notification_channel_downloads">डाउनलोड</string>
+    <string name="notification_channel_downloads_description">संगीत डाउनलोड की प्रगति</string>
+    <string name="notification_downloading_title">ट्रैक डाउनलोड हो रहा है</string>
+    <string name="notification_progress_percent">%1$d%%</string>
+    <string name="notification_download_complete_title">डाउनलोड पूर्ण</string>
+    <string name="notification_download_complete_text">ट्रैक ऑफ़लाइन चलाने के लिए तैयार है</string>
+    <string name="notification_download_failed">डाउनलोड विफल</string>
+</resources>
