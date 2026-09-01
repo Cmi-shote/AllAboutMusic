@@ -1,0 +1,119 @@
+<resources>
+    <string name="nav_home">Accueil</string>
+    <string name="nav_library">Bibliothèque</string>
+    <string name="nav_mixes">Mixes</string>
+
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_retry">Réessayer</string>
+    <string name="action_create">Créer</string>
+    <string name="dialog_error_title">Erreur</string>
+
+    <string name="home_search_placeholder">Rechercher des titres, des artistes…</string>
+    <string name="cd_search">Rechercher</string>
+    <string name="cd_close_search">Fermer la recherche</string>
+    <string name="genre_featured">À la une</string>
+    <string name="home_no_tracks">Aucun titre trouvé</string>
+    <string name="error_unknown">Erreur inconnue</string>
+
+    <string name="cd_download">Télécharger</string>
+    <string name="cd_downloaded">Téléchargé</string>
+    <string name="download_waiting">En attente…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">Terminé</string>
+    <string name="download_failed">Échec</string>
+    <string name="download_cancelled">Annulé</string>
+
+    <string name="cd_back">Retour</string>
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">Titre %1$d sur %2$d</string>
+    <string name="cd_previous">Précédent</string>
+    <string name="cd_next">Suivant</string>
+    <string name="cd_play">Lire</string>
+    <string name="cd_pause">Pause</string>
+    <string name="player_queued">En file d\'attente…</string>
+    <string name="dialog_storage_full_title">Stockage plein</string>
+
+    <string name="library_title">Bibliothèque</string>
+    <string name="library_tab_downloads">Téléchargements</string>
+    <string name="library_tab_device">Musique de l\'appareil</string>
+    <string name="library_storage_used">Stockage utilisé : %1$s</string>
+    <string name="library_storage_short">Stockage : %1$s</string>
+    <string name="library_storage_warning">L\'utilisation du stockage dépasse 2 Go</string>
+    <string name="library_clear_queue">Vider la file</string>
+    <string name="library_no_downloads">Aucun titre téléchargé pour le moment.\nTéléchargez des titres depuis l\'onglet Accueil.</string>
+    <string name="library_active_downloads">Téléchargements en cours</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="one">%1$d titre téléchargé</item>
+        <item quantity="many">%1$d titre téléchargé</item>
+        <item quantity="other">%1$d titres téléchargés</item>
+    </plurals>
+
+    <string name="device_permission_needed">Autorisation requise pour accéder à la musique de l\'appareil.</string>
+    <string name="action_grant_permission">Accorder l\'autorisation</string>
+    <string name="device_scanning">Analyse de la musique de l\'appareil…</string>
+    <string name="device_no_music">Aucune musique trouvée sur l\'appareil.</string>
+    <string name="cd_rescan">Relancer l\'analyse</string>
+    <plurals name="device_track_count">
+        <item quantity="one">%1$d titre sur l\'appareil</item>
+        <item quantity="many">%1$d titre sur l\'appareil</item>
+        <item quantity="other">%1$d titres sur l\'appareil</item>
+    </plurals>
+
+    <string name="downloads_title">Téléchargements</string>
+    <string name="downloads_clear_completed">Effacer les téléchargements terminés</string>
+    <string name="downloads_empty">Aucun téléchargement</string>
+
+    <string name="mixes_title">Mixes</string>
+    <string name="mixes_empty">Aucun mix pour le moment.\nAppuyez sur + pour en créer un.</string>
+    <string name="cd_create_mix">Créer un mix</string>
+    <string name="cd_mix_cover">Pochette du mix</string>
+    <string name="cd_default_cover">Pochette par défaut</string>
+    <string name="cd_play_mix">Lire le mix</string>
+    <string name="cd_delete_mix">Supprimer le mix</string>
+    <plurals name="mix_track_count">
+        <item quantity="one">%1$d titre</item>
+        <item quantity="many">%1$d titre</item>
+        <item quantity="other">%1$d titres</item>
+    </plurals>
+    <string name="dialog_new_mix_title">Nouveau mix</string>
+    <string name="cd_add_cover_image">Ajouter une pochette</string>
+    <string name="cd_edit">Modifier</string>
+    <string name="mix_add_cover_optional">Ajouter une pochette (facultatif)</string>
+    <string name="mix_name_label">Nom du mix</string>
+
+    <string name="mix_default_name">Mix</string>
+    <string name="cd_edit_cover">Modifier la pochette</string>
+    <string name="cd_export_mix">Exporter le mix</string>
+    <string name="cd_add_track">Ajouter un titre</string>
+    <string name="cd_reorder">Réorganiser</string>
+    <string name="mix_detail_empty">Aucun titre dans ce mix.\nAppuyez sur + pour ajouter des titres téléchargés.</string>
+    <string name="mix_remove_track">Retirer du mix</string>
+    <string name="add_track_title">Ajouter un titre</string>
+    <string name="add_track_empty">Aucun titre téléchargé disponible.\nTéléchargez d\'abord des titres pour les ajouter à un mix.</string>
+
+    <string name="cue_summary">Cue : %1$s – %2$s</string>
+    <string name="cue_end">fin</string>
+    <string name="cue_in">Cue d\'entrée : %1$s</string>
+    <string name="cue_out">Cue de sortie : %1$s</string>
+    <string name="cue_set_cue_out">Définir le cue de sortie</string>
+    <string name="cue_play_to_end">Lire jusqu\'à la fin</string>
+
+    <string name="export_title">Exportation du mix</string>
+    <string name="export_cancel">Annuler l\'exportation</string>
+    <string name="export_background">Arrière-plan</string>
+    <string name="export_dismiss_hint">Appuyez sur Arrière-plan pour fermer cette boîte de dialogue.\nL\'exportation se poursuivra.</string>
+    <string name="export_in_progress_title">Exportation en cours</string>
+    <string name="export_in_progress_message">Quitter cet écran annulera l\'exportation en cours. Voulez-vous continuer ?</string>
+    <string name="export_leave_and_cancel">Quitter et annuler</string>
+    <string name="export_stay">Rester</string>
+    <string name="export_complete_title">Exportation terminée</string>
+    <string name="export_saved_to">Enregistré dans : %1$s</string>
+
+    <string name="error_load_tracks">Impossible de charger les titres</string>
+    <string name="error_search">Échec de la recherche</string>
+    <string name="error_max_tracks_per_mix">50 titres maximum par mix</string>
+    <string name="error_no_tracks_to_export">Aucun titre à exporter</string>
+    <string name="error_tracks_not_downloaded">Certains titres ne sont pas téléchargés : %1$s</string>
+    <string name="error_export_failed">Échec de l\'exportation : %1$s</string>
+</resources>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="notification_channel_downloads">Téléchargements</string>
+    <string name="notification_channel_downloads_description">Progression du téléchargement de musique</string>
+    <string name="notification_downloading_title">Téléchargement du titre</string>
+    <string name="notification_progress_percent">%1$d%%</string>
+    <string name="notification_download_complete_title">Téléchargement terminé</string>
+    <string name="notification_download_complete_text">Titre prêt pour l\'écoute hors connexion</string>
+    <string name="notification_download_failed">Échec du téléchargement</string>
+</resources>
