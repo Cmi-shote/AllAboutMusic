@@ -9,6 +9,9 @@ import com.simiscompany.allaboutmusic.domain.model.Track
 import com.simiscompany.allaboutmusic.domain.usecase.GetFeaturedTracksUseCase
 import com.simiscompany.allaboutmusic.domain.usecase.GetTracksByGenreUseCase
 import com.simiscompany.allaboutmusic.domain.usecase.SearchTracksUseCase
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.error_load_tracks
+import com.simiscompany.allaboutmusic.resources.error_search
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 data class HomeUiState(
     val tracks: List<Track> = emptyList(),
@@ -79,7 +83,7 @@ class HomeViewModel(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Failed to load tracks"
+                    error = e.message ?: getString(Res.string.error_load_tracks)
                 )
             }
         }
@@ -94,7 +98,7 @@ class HomeViewModel(
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message ?: "Failed to load tracks"
+                    error = e.message ?: getString(Res.string.error_load_tracks)
                 )
             }
         }
@@ -137,7 +141,7 @@ class HomeViewModel(
                     } catch (e: Exception) {
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
-                            error = e.message ?: "Search failed"
+                            error = e.message ?: getString(Res.string.error_search)
                         )
                     }
                 }

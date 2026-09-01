@@ -51,7 +51,15 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.unit.dp
 import com.simiscompany.allaboutmusic.domain.model.Track
+import com.simiscompany.allaboutmusic.resources.Res
+import com.simiscompany.allaboutmusic.resources.cd_close_search
+import com.simiscompany.allaboutmusic.resources.cd_search
+import com.simiscompany.allaboutmusic.resources.error_unknown
+import com.simiscompany.allaboutmusic.resources.genre_featured
+import com.simiscompany.allaboutmusic.resources.home_no_tracks
+import com.simiscompany.allaboutmusic.resources.home_search_placeholder
 import com.simiscompany.allaboutmusic.ui.components.TrackCard
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeScreen(
@@ -123,11 +131,11 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .focusRequester(focusRequester),
-                placeholder = { Text("Search songs, artists...") },
+                placeholder = { Text(stringResource(Res.string.home_search_placeholder)) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Search,
-                        contentDescription = "Search"
+                        contentDescription = stringResource(Res.string.cd_search)
                     )
                 },
                 trailingIcon = {
@@ -138,7 +146,7 @@ fun HomeScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = "Close search"
+                            contentDescription = stringResource(Res.string.cd_close_search)
                         )
                     }
                 },
@@ -159,7 +167,7 @@ fun HomeScreen(
             FilterChip(
                 selected = state.selectedGenre == null && state.searchQuery.isBlank(),
                 onClick = { viewModel.selectGenre(null) },
-                label = { Text("Featured") }
+                label = { Text(stringResource(Res.string.genre_featured)) }
             )
             HomeViewModel.GENRES.forEach { genre ->
                 FilterChip(
@@ -182,7 +190,7 @@ fun HomeScreen(
             state.error != null -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = state.error ?: "Unknown error",
+                        text = state.error ?: stringResource(Res.string.error_unknown),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier.padding(16.dp)
                     )
@@ -191,7 +199,7 @@ fun HomeScreen(
             state.tracks.isEmpty() -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        text = "No tracks found",
+                        text = stringResource(Res.string.home_no_tracks),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
