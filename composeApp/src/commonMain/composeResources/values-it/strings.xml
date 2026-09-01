@@ -1,0 +1,116 @@
+<resources>
+    <string name="nav_home">Home</string>
+    <string name="nav_library">Libreria</string>
+    <string name="nav_mixes">Mix</string>
+
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Annulla</string>
+    <string name="action_retry">Riprova</string>
+    <string name="action_create">Crea</string>
+    <string name="dialog_error_title">Errore</string>
+
+    <string name="home_search_placeholder">Cerca brani, artisti…</string>
+    <string name="cd_search">Cerca</string>
+    <string name="cd_close_search">Chiudi ricerca</string>
+    <string name="genre_featured">In evidenza</string>
+    <string name="home_no_tracks">Nessun brano trovato</string>
+    <string name="error_unknown">Errore sconosciuto</string>
+
+    <string name="cd_download">Scarica</string>
+    <string name="cd_downloaded">Scaricato</string>
+    <string name="download_waiting">In attesa…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">Completato</string>
+    <string name="download_failed">Non riuscito</string>
+    <string name="download_cancelled">Annullato</string>
+
+    <string name="cd_back">Indietro</string>
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">Brano %1$d di %2$d</string>
+    <string name="cd_previous">Precedente</string>
+    <string name="cd_next">Successivo</string>
+    <string name="cd_play">Riproduci</string>
+    <string name="cd_pause">Pausa</string>
+    <string name="player_queued">In coda…</string>
+    <string name="dialog_storage_full_title">Spazio esaurito</string>
+
+    <string name="library_title">Libreria</string>
+    <string name="library_tab_downloads">Download</string>
+    <string name="library_tab_device">Musica del dispositivo</string>
+    <string name="library_storage_used">Spazio utilizzato: %1$s</string>
+    <string name="library_storage_short">Spazio: %1$s</string>
+    <string name="library_storage_warning">L\'utilizzo dello spazio supera 2 GB</string>
+    <string name="library_clear_queue">Svuota coda</string>
+    <string name="library_no_downloads">Nessun brano scaricato.\nScarica brani dalla scheda Home.</string>
+    <string name="library_active_downloads">Download attivi</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="one">%1$d brano scaricato</item>
+        <item quantity="other">%1$d brani scaricati</item>
+    </plurals>
+
+    <string name="device_permission_needed">È necessaria l\'autorizzazione per accedere alla musica del dispositivo.</string>
+    <string name="action_grant_permission">Concedi autorizzazione</string>
+    <string name="device_scanning">Scansione della musica del dispositivo…</string>
+    <string name="device_no_music">Nessuna musica trovata sul dispositivo.</string>
+    <string name="cd_rescan">Nuova scansione</string>
+    <plurals name="device_track_count">
+        <item quantity="one">%1$d brano sul dispositivo</item>
+        <item quantity="other">%1$d brani sul dispositivo</item>
+    </plurals>
+
+    <string name="downloads_title">Download</string>
+    <string name="downloads_clear_completed">Cancella completati</string>
+    <string name="downloads_empty">Nessun download</string>
+
+    <string name="mixes_title">Mix</string>
+    <string name="mixes_empty">Nessun mix.\nTocca + per crearne uno.</string>
+    <string name="cd_create_mix">Crea mix</string>
+    <string name="cd_mix_cover">Copertina del mix</string>
+    <string name="cd_default_cover">Copertina predefinita</string>
+    <string name="cd_play_mix">Riproduci mix</string>
+    <string name="cd_delete_mix">Elimina mix</string>
+    <plurals name="mix_track_count">
+        <item quantity="one">%1$d brano</item>
+        <item quantity="other">%1$d brani</item>
+    </plurals>
+    <string name="dialog_new_mix_title">Nuovo mix</string>
+    <string name="cd_add_cover_image">Aggiungi immagine di copertina</string>
+    <string name="cd_edit">Modifica</string>
+    <string name="mix_add_cover_optional">Aggiungi copertina (facoltativo)</string>
+    <string name="mix_name_label">Nome del mix</string>
+
+    <string name="mix_default_name">Mix</string>
+    <string name="cd_edit_cover">Modifica copertina</string>
+    <string name="cd_export_mix">Esporta mix</string>
+    <string name="cd_add_track">Aggiungi brano</string>
+    <string name="cd_reorder">Riordina</string>
+    <string name="mix_detail_empty">Nessun brano in questo mix.\nTocca + per aggiungere brani scaricati.</string>
+    <string name="mix_remove_track">Rimuovi dal mix</string>
+    <string name="add_track_title">Aggiungi brano</string>
+    <string name="add_track_empty">Nessun brano scaricato disponibile.\nScarica prima dei brani per aggiungerli a un mix.</string>
+
+    <string name="cue_summary">Cue: %1$s – %2$s</string>
+    <string name="cue_end">fine</string>
+    <string name="cue_in">Cue in: %1$s</string>
+    <string name="cue_out">Cue out: %1$s</string>
+    <string name="cue_set_cue_out">Imposta cue out</string>
+    <string name="cue_play_to_end">Riproduci fino alla fine</string>
+
+    <string name="export_title">Esportazione mix</string>
+    <string name="export_cancel">Annulla esportazione</string>
+    <string name="export_background">In background</string>
+    <string name="export_dismiss_hint">Tocca In background per chiudere questa finestra.\nL\'esportazione continuerà.</string>
+    <string name="export_in_progress_title">Esportazione in corso</string>
+    <string name="export_in_progress_message">Uscendo da questa schermata l\'esportazione in corso verrà annullata. Vuoi continuare?</string>
+    <string name="export_leave_and_cancel">Esci e annulla</string>
+    <string name="export_stay">Resta</string>
+    <string name="export_complete_title">Esportazione completata</string>
+    <string name="export_saved_to">Salvato in: %1$s</string>
+
+    <string name="error_load_tracks">Impossibile caricare i brani</string>
+    <string name="error_search">Ricerca non riuscita</string>
+    <string name="error_max_tracks_per_mix">Massimo 50 brani per mix</string>
+    <string name="error_no_tracks_to_export">Nessun brano da esportare</string>
+    <string name="error_tracks_not_downloaded">Alcuni brani non sono stati scaricati: %1$s</string>
+    <string name="error_export_failed">Esportazione non riuscita: %1$s</string>
+</resources>
