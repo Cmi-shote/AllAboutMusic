@@ -1,0 +1,130 @@
+<resources>
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_library">Library</string>
+    <string name="nav_mixes">Mixes</string>
+
+    <!-- Generic actions / dialogs -->
+    <string name="action_ok">OK</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_create">Create</string>
+    <string name="dialog_error_title">Error</string>
+
+    <!-- Home / search -->
+    <string name="home_search_placeholder">Search songs, artists…</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_close_search">Close search</string>
+    <string name="genre_featured">Featured</string>
+    <string name="home_no_tracks">No tracks found</string>
+    <string name="error_unknown">Unknown error</string>
+
+    <!-- Downloads (shared states) -->
+    <string name="cd_download">Download</string>
+    <string name="cd_downloaded">Downloaded</string>
+    <string name="download_waiting">Waiting…</string>
+    <string name="download_percent">%1$d%%</string>
+    <string name="download_completed">Completed</string>
+    <string name="download_failed">Failed</string>
+    <string name="download_cancelled">Cancelled</string>
+
+    <!-- Player -->
+    <string name="cd_back">Back</string>
+    <!-- Legal attribution: the "Jamendo (CC BY)" part must stay in English in every locale -->
+    <string name="attribution_jamendo">via Jamendo (CC BY)</string>
+    <string name="player_mix_position">Track %1$d of %2$d</string>
+    <string name="cd_previous">Previous</string>
+    <string name="cd_next">Next</string>
+    <string name="cd_play">Play</string>
+    <string name="cd_pause">Pause</string>
+    <string name="player_queued">Queued…</string>
+    <string name="dialog_storage_full_title">Storage Full</string>
+
+    <!-- Library -->
+    <string name="library_title">Library</string>
+    <string name="library_tab_downloads">Downloads</string>
+    <string name="library_tab_device">Device Music</string>
+    <string name="library_storage_used">Storage used: %1$s</string>
+    <string name="library_storage_short">Storage: %1$s</string>
+    <string name="library_storage_warning">Storage usage exceeds 2GB</string>
+    <string name="library_clear_queue">Clear queue</string>
+    <string name="library_no_downloads">No downloaded tracks yet.\nDownload songs from the Home tab.</string>
+    <string name="library_active_downloads">Active Downloads</string>
+    <plurals name="library_downloaded_track_count">
+        <item quantity="one">%1$d downloaded track</item>
+        <item quantity="other">%1$d downloaded tracks</item>
+    </plurals>
+
+    <!-- Library — device music -->
+    <string name="device_permission_needed">Permission needed to access device music.</string>
+    <string name="action_grant_permission">Grant Permission</string>
+    <string name="device_scanning">Scanning device music…</string>
+    <string name="device_no_music">No music found on device.</string>
+    <string name="cd_rescan">Rescan</string>
+    <plurals name="device_track_count">
+        <item quantity="one">%1$d track on device</item>
+        <item quantity="other">%1$d tracks on device</item>
+    </plurals>
+
+    <!-- Downloads screen -->
+    <string name="downloads_title">Downloads</string>
+    <string name="downloads_clear_completed">Clear completed</string>
+    <string name="downloads_empty">No downloads yet</string>
+
+    <!-- Mix list -->
+    <string name="mixes_title">Mixes</string>
+    <string name="mixes_empty">No mixes yet.\nTap + to create one.</string>
+    <string name="cd_create_mix">Create mix</string>
+    <string name="cd_mix_cover">Mix cover</string>
+    <string name="cd_default_cover">Default cover</string>
+    <string name="cd_play_mix">Play mix</string>
+    <string name="cd_delete_mix">Delete mix</string>
+    <plurals name="mix_track_count">
+        <item quantity="one">%1$d track</item>
+        <item quantity="other">%1$d tracks</item>
+    </plurals>
+    <string name="dialog_new_mix_title">New Mix</string>
+    <string name="cd_add_cover_image">Add cover image</string>
+    <string name="cd_edit">Edit</string>
+    <string name="mix_add_cover_optional">Add cover (optional)</string>
+    <string name="mix_name_label">Mix name</string>
+
+    <!-- Mix detail -->
+    <string name="mix_default_name">Mix</string>
+    <string name="cd_edit_cover">Edit cover</string>
+    <string name="cd_export_mix">Export mix</string>
+    <string name="cd_add_track">Add track</string>
+    <string name="cd_reorder">Reorder</string>
+    <string name="mix_detail_empty">No tracks in this mix.\nTap + to add downloaded tracks.</string>
+    <string name="mix_remove_track">Remove from mix</string>
+    <string name="add_track_title">Add Track</string>
+    <string name="add_track_empty">No downloaded tracks available.\nDownload songs first to add them to a mix.</string>
+
+    <!-- Mix detail — cue points -->
+    <string name="cue_summary">Cue: %1$s – %2$s</string>
+    <string name="cue_end">end</string>
+    <string name="cue_in">Cue In: %1$s</string>
+    <string name="cue_out">Cue Out: %1$s</string>
+    <string name="cue_set_cue_out">Set cue-out</string>
+    <string name="cue_play_to_end">Play to end</string>
+
+    <!-- Mix export -->
+    <string name="export_title">Exporting Mix</string>
+    <string name="export_cancel">Cancel Export</string>
+    <string name="export_background">Background</string>
+    <string name="export_dismiss_hint">Tap Background to dismiss this dialog.\nExport will continue.</string>
+    <string name="export_in_progress_title">Export in Progress</string>
+    <string name="export_in_progress_message">Leaving this screen will cancel the current export. Are you sure?</string>
+    <string name="export_leave_and_cancel">Leave &amp; Cancel</string>
+    <string name="export_stay">Stay</string>
+    <string name="export_complete_title">Export Complete</string>
+    <string name="export_saved_to">Saved to: %1$s</string>
+
+    <!-- Errors surfaced from view models -->
+    <string name="error_load_tracks">Failed to load tracks</string>
+    <string name="error_search">Search failed</string>
+    <string name="error_max_tracks_per_mix">Max 50 tracks per mix</string>
+    <string name="error_no_tracks_to_export">No tracks to export</string>
+    <string name="error_tracks_not_downloaded">Some tracks are not downloaded: %1$s</string>
+    <string name="error_export_failed">Export failed: %1$s</string>
+</resources>
