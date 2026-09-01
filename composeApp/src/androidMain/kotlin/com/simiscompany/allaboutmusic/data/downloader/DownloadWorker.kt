@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.simiscompany.allaboutmusic.R
 import com.simiscompany.allaboutmusic.data.database.AppDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -134,7 +135,7 @@ class DownloadWorker(
             database.downloadQueueDao().updateFailed(
                 downloadId,
                 "failed",
-                e.message ?: "Download failed"
+                e.message ?: context.getString(R.string.notification_download_failed)
             )
 
             // Cancel the progress notification on failure
@@ -148,10 +149,10 @@ class DownloadWorker(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Downloads",
+                context.getString(R.string.notification_channel_downloads),
                 NotificationManager.IMPORTANCE_DEFAULT
             ).apply {
-                description = "Music download progress"
+                description = context.getString(R.string.notification_channel_downloads_description)
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -159,8 +160,8 @@ class DownloadWorker(
 
     private fun showProgressNotification(notificationId: Int, progress: Int) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Downloading track")
-            .setContentText("$progress%")
+            .setContentTitle(context.getString(R.string.notification_downloading_title))
+            .setContentText(context.getString(R.string.notification_progress_percent, progress))
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setProgress(100, progress, false)
             .setOngoing(true)
@@ -171,8 +172,8 @@ class DownloadWorker(
 
     private fun createForegroundInfo(notificationId: Int, trackId: String, progress: Int): ForegroundInfo {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Downloading track")
-            .setContentText("$progress%")
+            .setContentTitle(context.getString(R.string.notification_downloading_title))
+            .setContentText(context.getString(R.string.notification_progress_percent, progress))
             .setSmallIcon(android.R.drawable.stat_sys_download)
             .setProgress(100, progress, false)
             .setOngoing(true)
@@ -183,8 +184,8 @@ class DownloadWorker(
 
     private fun showCompletedNotification(notificationId: Int) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Download complete")
-            .setContentText("Track ready for offline playback")
+            .setContentTitle(context.getString(R.string.notification_download_complete_title))
+            .setContentText(context.getString(R.string.notification_download_complete_text))
             .setSmallIcon(android.R.drawable.stat_sys_download_done)
             .setAutoCancel(true)
             .build()

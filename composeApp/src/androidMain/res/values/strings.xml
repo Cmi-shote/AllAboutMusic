@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">AllAboutMusic</string>
+
+    <!-- Download notifications (Android-only; iOS uses URLSession and has no equivalent) -->
+    <string name="notification_channel_downloads">Downloads</string>
+    <string name="notification_channel_downloads_description">Music download progress</string>
+    <string name="notification_downloading_title">Downloading track</string>
+    <string name="notification_progress_percent">%1$d%%</string>
+    <string name="notification_download_complete_title">Download complete</string>
+    <string name="notification_download_complete_text">Track ready for offline playback</string>
+    <string name="notification_download_failed">Download failed</string>
 </resources>
