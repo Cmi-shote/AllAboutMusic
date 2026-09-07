@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -43,10 +44,16 @@ class HomeViewModel(
         val GENRES = listOf("rock", "electronic", "jazz", "hiphop", "classical", "pop", "ambient", "metal", "blues", "reggae")
     }
 
-    private val _uiState = MutableStateFlow(HomeUiState())
+    // Starts loading: init kicks off the featured load immediately, and an
+    // empty-but-idle first frame would flash the "no tracks" empty state.
+    private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private val _searchInput = MutableStateFlow("")
+
+    // Bumped for every load so a slow response cannot overwrite a newer one —
+    // e.g. a search still in flight when the user clears the field.
+    private var requestSeq = 0
 
     init {
         loadFeatured()
@@ -56,16 +63,16 @@ class HomeViewModel(
 
     fun onSearchQueryChanged(query: String) {
         _searchInput.value = query
-        _uiState.value = _uiState.value.copy(searchQuery = query)
+        _uiState.update { it.copy(searchQuery = query) }
         if (query.isBlank()) {
-            // Revert to current genre or featured
+            // Back out of search to whatever the user was browsing before it
             val genre = _uiState.value.selectedGenre
-            if (genre != null) selectGenre(genre) else loadFeatured()
+            if (genre != null) loadByGenre(genre) else loadFeatured()
         }
     }
 
     fun selectGenre(genre: String?) {
-        _uiState.value = _uiState.value.copy(selectedGenre = genre, searchQuery = "")
+        _uiState.update { it.copy(selectedGenre = genre, searchQuery = "") }
         _searchInput.value = ""
         if (genre == null) {
             loadFeatured()
@@ -75,31 +82,29 @@ class HomeViewModel(
     }
 
     private fun loadFeatured() {
+        val token = beginRequest()
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val tracks = getFeaturedTracks()
-                _uiState.value = _uiState.value.copy(tracks = tracks, isLoading = false)
+                applyIfCurrent(token) { it.copy(tracks = tracks, isLoading = false) }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: getString(Res.string.error_load_tracks)
-                )
+                val message = e.message?.takeIf { it.isNotBlank() }
+                    ?: getString(Res.string.error_load_tracks)
+                applyIfCurrent(token) { it.copy(isLoading = false, error = message) }
             }
         }
     }
 
     private fun loadByGenre(genre: String) {
+        val token = beginRequest()
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
                 val tracks = getTracksByGenre(genre)
-                _uiState.value = _uiState.value.copy(tracks = tracks, isLoading = false)
+                applyIfCurrent(token) { it.copy(tracks = tracks, isLoading = false) }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = e.message ?: getString(Res.string.error_load_tracks)
-                )
+                val message = e.message?.takeIf { it.isNotBlank() }
+                    ?: getString(Res.string.error_load_tracks)
+                applyIfCurrent(token) { it.copy(isLoading = false, error = message) }
             }
         }
     }
@@ -109,7 +114,7 @@ class HomeViewModel(
             try {
                 downloadRepository.enqueueDownload(track)
             } catch (e: InsufficientStorageException) {
-                _uiState.value = _uiState.value.copy(error = e.message)
+                _uiState.update { it.copy(error = e.message) }
             }
         }
     }
@@ -118,7 +123,7 @@ class HomeViewModel(
         viewModelScope.launch {
             downloadRepository.getAllDownloads().collect { downloads ->
                 val stateMap = downloads.associateBy { it.track.id }
-                _uiState.value = _uiState.value.copy(downloadStates = stateMap)
+                _uiState.update { it.copy(downloadStates = stateMap) }
             }
         }
     }
@@ -130,21 +135,27 @@ class HomeViewModel(
                 .distinctUntilChanged()
                 .filter { it.isNotBlank() }
                 .collect { query ->
-                    _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+                    val token = beginRequest()
                     try {
                         val tracks = searchTracks(query)
-                        _uiState.value = _uiState.value.copy(
-                            tracks = tracks,
-                            isLoading = false,
-                            selectedGenre = null
-                        )
+                        applyIfCurrent(token) { it.copy(tracks = tracks, isLoading = false) }
                     } catch (e: Exception) {
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
-                            error = e.message ?: getString(Res.string.error_search)
-                        )
+                        val message = e.message?.takeIf { it.isNotBlank() }
+                            ?: getString(Res.string.error_search)
+                        applyIfCurrent(token) { it.copy(isLoading = false, error = message) }
                     }
                 }
         }
+    }
+
+    /** Marks a new load as the current one and puts the UI into its loading state. */
+    private fun beginRequest(): Int {
+        val token = ++requestSeq
+        _uiState.update { it.copy(isLoading = true, error = null) }
+        return token
+    }
+
+    private fun applyIfCurrent(token: Int, transform: (HomeUiState) -> HomeUiState) {
+        if (token == requestSeq) _uiState.update(transform)
     }
 }
