@@ -12,16 +12,28 @@ import platform.AVFoundation.AVAssetExportSessionStatusFailed
 import platform.AVFoundation.AVAssetTrack
 import platform.AVFoundation.AVFileTypeAppleM4A
 import platform.AVFoundation.AVMediaTypeAudio
+import platform.AVFoundation.AVMetadataCommonKeyAlbumName
+import platform.AVFoundation.AVMetadataCommonKeyArtist
+import platform.AVFoundation.AVMetadataCommonKeyArtwork
+import platform.AVFoundation.AVMetadataCommonKeyDescription
+import platform.AVFoundation.AVMetadataCommonKeyTitle
+import platform.AVFoundation.AVMetadataItem
+import platform.AVFoundation.AVMetadataKeySpaceCommon
 import platform.AVFoundation.AVMutableComposition
+import platform.AVFoundation.AVMutableMetadataItem
 import platform.AVFoundation.AVURLAsset
 import platform.AVFoundation.addMutableTrackWithMediaType
 import platform.AVFoundation.insertTimeRange
+import platform.AVFoundation.key
+import platform.AVFoundation.keySpace
 import platform.AVFoundation.loadTracksWithMediaType
+import platform.AVFoundation.metadata
 import platform.CoreMedia.CMTimeMake
 import platform.CoreMedia.CMTimeRangeMake
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
 import kotlin.coroutines.resume
@@ -31,8 +43,9 @@ actual class MixExporter {
 
     @OptIn(ExperimentalForeignApi::class)
     actual suspend fun exportMix(
-        mixName: String,
+        metadata: MixMetadata,
         mixTracks: List<MixTrack>,
+        artwork: ByteArray?,
         onProgress: (Float) -> Unit
     ): Result<String> = withContext(Dispatchers.Default) {
         try {
@@ -83,7 +96,7 @@ actual class MixExporter {
             }
 
             // Export
-            val sanitizedName = mixName.replace(Regex("[^a-zA-Z0-9_\\- ]"), "").trim()
+            val sanitizedName = metadata.title.replace(Regex("[^a-zA-Z0-9_\\- ]"), "").trim()
             val documentsPath = NSSearchPathForDirectoriesInDomains(
                 NSDocumentDirectory, NSUserDomainMask, true
             ).first() as String
@@ -101,6 +114,7 @@ actual class MixExporter {
             )
             exportSession.outputFileType = AVFileTypeAppleM4A
             exportSession.outputURL = outputUrl
+            exportSession.metadata = metadataItems(metadata, artwork)
 
             val result = suspendCoroutine { continuation ->
                 exportSession.exportAsynchronouslyWithCompletionHandler {
@@ -119,6 +133,39 @@ actual class MixExporter {
             result
         } catch (e: Exception) {
             Result.failure(e)
+        }
+    }
+
+    /**
+     * Tags and cover art for the exported file. Common-keyspace items are mapped by
+     * AVFoundation onto the iTunes atoms an M4A expects.
+     */
+    private fun metadataItems(metadata: MixMetadata, artwork: ByteArray?): List<AVMetadataItem> {
+        val items = mutableListOf<AVMetadataItem>()
+        textItem(AVMetadataCommonKeyTitle, metadata.title)?.let(items::add)
+        textItem(AVMetadataCommonKeyArtist, metadata.artist)?.let(items::add)
+        textItem(AVMetadataCommonKeyAlbumName, metadata.album)?.let(items::add)
+        textItem(AVMetadataCommonKeyDescription, metadata.comment)?.let(items::add)
+
+        val artworkData = artwork?.toNSData()
+        if (artworkData != null && AVMetadataCommonKeyArtwork != null) {
+            items.add(
+                AVMutableMetadataItem().apply {
+                    keySpace = AVMetadataKeySpaceCommon
+                    key = AVMetadataCommonKeyArtwork as NSString
+                    setValue(artworkData)
+                }
+            )
+        }
+        return items
+    }
+
+    private fun textItem(metadataKey: String?, text: String): AVMetadataItem? {
+        if (metadataKey == null || text.isEmpty()) return null
+        return AVMutableMetadataItem().apply {
+            keySpace = AVMetadataKeySpaceCommon
+            key = metadataKey as NSString
+            setValue(text as NSString)
         }
     }
 

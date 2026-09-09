@@ -32,12 +32,13 @@ actual class MixExporter(private val context: Context) {
     )
 
     actual suspend fun exportMix(
-        mixName: String,
+        metadata: MixMetadata,
         mixTracks: List<MixTrack>,
+        artwork: ByteArray?,
         onProgress: (Float) -> Unit
     ): Result<String> = withContext(Dispatchers.IO) {
         try {
-            val sanitizedName = mixName.replace(Regex("[^a-zA-Z0-9_\\- ]"), "").trim()
+            val sanitizedName = metadata.title.replace(Regex("[^a-zA-Z0-9_\\- ]"), "").trim()
             val tempFile = File(context.cacheDir, "${sanitizedName}_export.m4a")
 
             // Decode all tracks to PCM, respecting cue points
@@ -71,6 +72,10 @@ actual class MixExporter(private val context: Context) {
             encodePcmToM4a(combined, outputSampleRate, outputChannels, tempFile) { encodeProgress ->
                 onProgress(0.5f + encodeProgress * 0.5f)
             }
+
+            // Tags and cover art. Best effort: a mix that can't be tagged is still
+            // a valid export, so a failure here doesn't fail the whole operation.
+            Mp4MetadataInserter.insert(tempFile, metadata, artwork)
 
             // Move to Music directory
             val outputPath = saveToMusicDir(tempFile, sanitizedName)
@@ -352,6 +357,7 @@ actual class MixExporter(private val context: Context) {
             // Use MediaStore
             val values = ContentValues().apply {
                 put(MediaStore.Audio.Media.DISPLAY_NAME, "$mixName.m4a")
+                put(MediaStore.Audio.Media.TITLE, mixName)
                 put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp4")
                 put(MediaStore.Audio.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/AllAboutMusic")
                 put(MediaStore.Audio.Media.IS_PENDING, 1)

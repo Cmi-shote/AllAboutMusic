@@ -4,8 +4,9 @@ import com.simiscompany.allaboutmusic.domain.model.MixTrack
 
 expect class MixExporter {
     suspend fun exportMix(
-        mixName: String,
+        metadata: MixMetadata,
         mixTracks: List<MixTrack>,
+        artwork: ByteArray?,
         onProgress: (Float) -> Unit
     ): Result<String>
 }
