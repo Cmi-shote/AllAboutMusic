@@ -91,7 +91,6 @@ fun PlayerScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(start = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

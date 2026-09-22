@@ -3,6 +3,8 @@ package com.simiscompany.allaboutmusic.ui.mix
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simiscompany.allaboutmusic.data.export.MixExporter
+import com.simiscompany.allaboutmusic.data.export.MixMetadata
+import com.simiscompany.allaboutmusic.data.export.loadMixArtwork
 import com.simiscompany.allaboutmusic.data.repository.MixRepository
 import com.simiscompany.allaboutmusic.data.repository.TrackRepository
 import com.simiscompany.allaboutmusic.domain.model.Mix
@@ -158,8 +160,9 @@ class MixDetailViewModel(
         exportJob = viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isExporting = true, exportProgress = 0f)
             val result = mixExporter.exportMix(
-                mixName = mix.name,
+                metadata = MixMetadata.forMix(mix.name, tracks),
                 mixTracks = tracks,
+                artwork = loadMixArtwork(mix.coverImagePath),
                 onProgress = { progress ->
                     _uiState.value = _uiState.value.copy(exportProgress = progress)
                 }

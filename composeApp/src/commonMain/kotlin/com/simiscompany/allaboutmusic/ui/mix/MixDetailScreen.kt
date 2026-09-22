@@ -26,12 +26,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.IosShare
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -79,6 +79,7 @@ import com.simiscompany.allaboutmusic.resources.add_track_title
 import com.simiscompany.allaboutmusic.resources.cd_add_track
 import com.simiscompany.allaboutmusic.resources.cd_back
 import com.simiscompany.allaboutmusic.resources.cd_default_cover
+import com.simiscompany.allaboutmusic.resources.default_mix_cover
 import com.simiscompany.allaboutmusic.resources.cd_edit_cover
 import com.simiscompany.allaboutmusic.resources.cd_export_mix
 import com.simiscompany.allaboutmusic.resources.cd_mix_cover
@@ -107,6 +108,7 @@ import com.simiscompany.allaboutmusic.resources.mix_detail_empty
 import com.simiscompany.allaboutmusic.resources.mix_remove_track
 import com.simiscompany.allaboutmusic.ui.components.formatDuration
 import com.simiscompany.allaboutmusic.ui.components.rememberImagePickerLauncher
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import kotlin.math.roundToInt
 
@@ -142,7 +144,6 @@ fun MixDetailScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.statusBars)
                     .padding(start = 4.dp, end = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -172,21 +173,15 @@ fun MixDetailScreen(
                             contentScale = ContentScale.Crop
                         )
                     } else {
-                        Box(
+                        Image(
+                            painter = painterResource(Res.drawable.default_mix_cover),
+                            contentDescription = stringResource(Res.string.cd_default_cover),
                             modifier = Modifier
                                 .size(40.dp)
                                 .align(Alignment.TopStart)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainer),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.MusicNote,
-                                contentDescription = stringResource(Res.string.cd_default_cover),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
+                                .clip(RoundedCornerShape(8.dp)),
+                            contentScale = ContentScale.Crop
+                        )
                     }
                     Box(
                         modifier = Modifier
